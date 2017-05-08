@@ -71,5 +71,10 @@ namespace net.r_eg.MoConTool.Filters
         /// <param name="lParam">A pointer to an MSLLHOOKSTRUCT structure.</param>
         /// <returns></returns>
         FilterResult msg(int nCode, WPARAM wParam, LPARAM lParam);
+
+        /// <summary>
+        /// To reset number of triggering.
+        /// </summary>
+        void resetTriggerCount();
     }
 }

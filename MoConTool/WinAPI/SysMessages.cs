@@ -98,5 +98,24 @@ namespace net.r_eg.MoConTool.WinAPI
         {
             return a == (UIntPtr)b;
         }
+
+        /// <summary>
+        /// Checks equality by OR logic.
+        /// </summary>
+        /// <returns>true if at least one from barr is equal to a.</returns>
+        public static bool EqOr(WPARAM a, params uint[] barr)
+        {
+            if(barr == null) {
+                return false;
+            }
+
+            foreach(uint b in barr)
+            {
+                if(Eq(a, b)) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

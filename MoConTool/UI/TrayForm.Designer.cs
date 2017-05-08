@@ -400,6 +400,7 @@
             // chkHyperactiveScroll
             // 
             this.chkHyperactiveScroll.AutoSize = true;
+            this.chkHyperactiveScroll.Enabled = false;
             this.chkHyperactiveScroll.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chkHyperactiveScroll.Location = new System.Drawing.Point(12, 109);
             this.chkHyperactiveScroll.Name = "chkHyperactiveScroll";
@@ -445,6 +446,7 @@
             // chkDoubleClick
             // 
             this.chkDoubleClick.AutoSize = true;
+            this.chkDoubleClick.Enabled = false;
             this.chkDoubleClick.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chkDoubleClick.Location = new System.Drawing.Point(12, 76);
             this.chkDoubleClick.Name = "chkDoubleClick";
@@ -470,6 +472,7 @@
             // chkMixedClicks
             // 
             this.chkMixedClicks.AutoSize = true;
+            this.chkMixedClicks.Enabled = false;
             this.chkMixedClicks.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chkMixedClicks.Location = new System.Drawing.Point(12, 44);
             this.chkMixedClicks.Name = "chkMixedClicks";
@@ -495,12 +498,6 @@
             // numInterruptedClick
             // 
             this.numInterruptedClick.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.numInterruptedClick.DecimalPlaces = 2;
-            this.numInterruptedClick.Increment = new decimal(new int[] {
-            5,
-            0,
-            0,
-            65536});
             this.numInterruptedClick.Location = new System.Drawing.Point(383, 12);
             this.numInterruptedClick.Maximum = new decimal(new int[] {
             10000,

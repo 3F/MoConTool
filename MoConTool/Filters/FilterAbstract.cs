@@ -105,6 +105,14 @@ namespace net.r_eg.MoConTool.Filters
         /// <returns></returns>
         public abstract FilterResult msg(int nCode, WPARAM wParam, LPARAM lParam);
 
+        /// <summary>
+        /// To reset number of triggering.
+        /// </summary>
+        public void resetTriggerCount()
+        {
+            TriggerCount = 0;
+        }
+
         /// <param name="name">Optional name of listener.</param>
         public FilterAbstract(string name = null)
         {

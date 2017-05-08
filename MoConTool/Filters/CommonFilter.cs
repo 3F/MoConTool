@@ -47,7 +47,7 @@ namespace net.r_eg.MoConTool.Filters
         public CommonFilter()
             : base("Common")
         {
-
+            Activated = true;
         }
     }
 }

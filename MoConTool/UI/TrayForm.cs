@@ -126,6 +126,12 @@ namespace net.r_eg.MoConTool.UI
             }
         }
 
+        private void reset(IMouseListener h, Label label)
+        {
+            h.resetTriggerCount();
+            label.Text = "0";
+        }
+
         private void render()
         {
             chkInterruptedClick.Checked = fic.Activated;
@@ -262,26 +268,29 @@ namespace net.r_eg.MoConTool.UI
         private void chkDebug_CheckedChanged(object sender, EventArgs e)
         {
             ClientSize = chkDebug.Checked ? origin : new Size(ClientSize.Width, listBoxDebug.Location.Y);
+            if(!chkDebug.Checked) {
+                uiAction(() => listBoxDebug.Items.Clear());
+            }
         }
 
         private void labelInterruptedClick_Click(object sender, EventArgs e)
         {
-            labelInterruptedClick.Text = "0";
+            reset(fic, labelInterruptedClick);
         }
 
         private void labelMixedClicks_Click(object sender, EventArgs e)
         {
-            labelMixedClicks.Text = "0";
+            reset(fmc, labelMixedClicks);
         }
 
         private void labelDoubleClick_Click(object sender, EventArgs e)
         {
-            labelDoubleClick.Text = "0";
+            reset(fdc, labelDoubleClick);
         }
 
         private void labelHyperactiveScroll_Click(object sender, EventArgs e)
         {
-            labelHyperactiveScroll.Text = "0";
+            reset(fhs, labelHyperactiveScroll);
         }
 
         private void numInterruptedClick_ValueChanged(object sender, EventArgs e)
