@@ -47,6 +47,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Exceptions\ListenerException.cs" />
+    <Compile Include="Filters\ILMR.cs" />
+    <Compile Include="Filters\IMouseListenerSvc.cs" />
+    <Compile Include="Filters\LMRContainer.cs" />
+    <Compile Include="Filters\LMRAbstract.cs" />
     <Compile Include="Filters\InterruptedClickFilter.cs" />
     <Compile Include="Filters\MixedClicksFilter.cs" />
     <Compile Include="Filters\DoubleClicksFilter.cs" />
@@ -79,7 +83,10 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WinAPI\LPINPUT.cs" />
+    <Compile Include="WinAPI\POINT.cs" />
     <Compile Include="WinAPI\NativeMethods.cs" />
+    <Compile Include="WinAPI\MSLLHOOKSTRUCT.cs" />
     <Compile Include="WinAPI\SysMessages.cs" />
     <Compile Include="WinAPI\WindowsHookId.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">

@@ -33,20 +33,61 @@ namespace net.r_eg.MoConTool.Filters
 
     public class DoubleClicksFilter: FilterAbstract, IMouseListener
     {
+        private LMRContainer lmr;
+
+        internal sealed class LMR: LMRAbstract, ILMR
+        {
+            private volatile bool isPrevCodeDown = false;
+            private object sync = new object();
+
+            public override FilterResult process(int nCode, WPARAM wParam, LPARAM lParam)
+            {
+                lock(sync)
+                {
+                    var delta = (DateTime.Now - stamp).TotalMilliseconds;
+                    LSender.Send(this, $"{wParam} - delta {delta}ms", Message.Level.Trace);
+
+                    if(isPrevCodeDown) {
+                        isPrevCodeDown = false;
+                        LSender.Send(this, $"Prevent '{wParam}' because of previous {codeDown}", Message.Level.Debug);
+                        return FilterResult.Abort;
+                    }
+
+                    if(SysMessages.Eq(wParam, codeDown) && delta < parent.Value) {
+                        LSender.Send(this, $"Found double-click bug of '{wParam}' because of delta {delta}", Message.Level.Info);
+                        isPrevCodeDown = true;
+
+                        parent.trigger();
+                        return FilterResult.Abort;
+                    }
+
+                    if(SysMessages.Eq(wParam, codeDown)) {
+                        stamp = DateTime.Now;
+                    }
+
+                    return FilterResult.Continue;
+                }
+            }
+        }
+
         /// <param name="nCode">A code that uses to determine how to process the message.</param>
         /// <param name="wParam">The identifier of the mouse message.</param>
         /// <param name="lParam">A pointer to an MSLLHOOKSTRUCT structure.</param>
         /// <returns></returns>
         public override FilterResult msg(int nCode, WPARAM wParam, LPARAM lParam)
         {
-            return FilterResult.Continue;
-            //return FilterResult.Abort;
+            if(!isLMR(wParam)) {
+                return FilterResult.Continue;
+            }
+
+            return lmr.process(nCode, wParam, lParam);
         }
 
         public DoubleClicksFilter()
             : base("DoubleClicks")
         {
-            Value = 120;
+            Value = 118;
+            lmr = new LMRContainer(this, typeof(LMR));
         }
     }
 }

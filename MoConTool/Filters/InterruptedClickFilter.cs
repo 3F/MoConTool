@@ -24,7 +24,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using net.r_eg.Conari.Log;
@@ -38,17 +37,12 @@ namespace net.r_eg.MoConTool.Filters
 
     public class InterruptedClickFilter: FilterAbstract, IMouseListener
     {
-        protected Dictionary<MouseState.Flags, LMR> data;
+        private LMRContainer lmr;
 
-        protected sealed class LMR
+        internal sealed class LMR: LMRAbstract, ILMR
         {
-            private uint codeDown;
-            private uint codeUp;
-            private InterruptedClickFilter parent;
-
             private volatile bool shadowClick = false;
             private volatile bool lockedThread = false;
-            private DateTime stamp = DateTime.Now;
 
             private object sync = new object();
 
@@ -61,7 +55,7 @@ namespace net.r_eg.MoConTool.Filters
                 public LPARAM lParam;
             }
 
-            public FilterResult process(int nCode, WPARAM wParam, LPARAM lParam)
+            public override FilterResult process(int nCode, WPARAM wParam, LPARAM lParam)
             {
                 if(shadowClick) {
                     LSender.Send(this, $"send {wParam} :: {(DateTime.Now - stamp).TotalMilliseconds}", Message.Level.Debug);
@@ -149,13 +143,6 @@ namespace net.r_eg.MoConTool.Filters
                 return FilterResult.Abort;
             }
 
-            public LMR(uint codeDown, uint codeUp, InterruptedClickFilter parent)
-            {
-                this.codeDown   = codeDown;
-                this.codeUp     = codeUp;
-                this.parent     = parent;
-            }
-
             private void resend(TCode cmd1, TCode cmd2)
             {
                 sendCode(cmd1);
@@ -199,51 +186,18 @@ namespace net.r_eg.MoConTool.Filters
         /// <returns></returns>
         public override FilterResult msg(int nCode, WPARAM wParam, LPARAM lParam)
         {
-            if(!SysMessages.EqOr(wParam,
-                                    SysMessages.WM_LBUTTONDOWN,
-                                    SysMessages.WM_LBUTTONUP,
-                                    SysMessages.WM_MBUTTONDOWN,
-                                    SysMessages.WM_MBUTTONUP,
-                                    SysMessages.WM_RBUTTONDOWN,
-                                    SysMessages.WM_RBUTTONUP))
-            {
+            if(!isLMR(wParam)) {
                 return FilterResult.Continue;
             }
 
-            if(isFlag(MouseState.Flags.Left, wParam, SysMessages.WM_LBUTTONDOWN, SysMessages.WM_LBUTTONUP)) {
-                return data[MouseState.Flags.Left].process(nCode, wParam, lParam);
-            }
-
-            if(isFlag(MouseState.Flags.Middle, wParam, SysMessages.WM_MBUTTONDOWN, SysMessages.WM_MBUTTONUP)) {
-                return data[MouseState.Flags.Middle].process(nCode, wParam, lParam);
-            }
-
-            if(isFlag(MouseState.Flags.Right, wParam, SysMessages.WM_RBUTTONDOWN, SysMessages.WM_RBUTTONUP)) {
-                return data[MouseState.Flags.Right].process(nCode, wParam, lParam);
-            }
-
-            return FilterResult.Continue;
+            return lmr.process(nCode, wParam, lParam);
         }
 
         public InterruptedClickFilter()
             : base("InterruptedClick")
         {
             Value = 30;
-
-            data = new Dictionary<MouseState.Flags, LMR>();
-            data[MouseState.Flags.Left]   = new LMR(SysMessages.WM_LBUTTONDOWN, SysMessages.WM_LBUTTONUP, this);
-            data[MouseState.Flags.Middle] = new LMR(SysMessages.WM_MBUTTONDOWN, SysMessages.WM_MBUTTONUP, this);
-            data[MouseState.Flags.Right]  = new LMR(SysMessages.WM_RBUTTONDOWN, SysMessages.WM_RBUTTONUP, this);
-        }
-
-        private bool isFlag(MouseState.Flags flags, WPARAM wParam, uint code1, uint code2)
-        {
-            if((Handler & flags) != 0
-                && (SysMessages.EqOr(wParam, code1, code2)))
-            {
-                return true;
-            }
-            return false;
+            lmr = new LMRContainer(this, typeof(LMR));
         }
     }
 }

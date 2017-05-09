@@ -33,32 +33,32 @@ namespace net.r_eg.MoConTool.Simulators
     {
         public static bool LeftDown()
         {
-            return Push(NativeMethods.LPINPUT.MouseFlags.MOUSEEVENTF_LEFTDOWN);
+            return Push(LPINPUT.MouseFlags.MOUSEEVENTF_LEFTDOWN);
         }
 
         public static bool LeftUp()
         {
-            return Push(NativeMethods.LPINPUT.MouseFlags.MOUSEEVENTF_LEFTUP);
+            return Push(LPINPUT.MouseFlags.MOUSEEVENTF_LEFTUP);
         }
 
         public static bool RightDown()
         {
-            return Push(NativeMethods.LPINPUT.MouseFlags.MOUSEEVENTF_RIGHTDOWN);
+            return Push(LPINPUT.MouseFlags.MOUSEEVENTF_RIGHTDOWN);
         }
 
         public static bool RightUp()
         {
-            return Push(NativeMethods.LPINPUT.MouseFlags.MOUSEEVENTF_RIGHTUP);
+            return Push(LPINPUT.MouseFlags.MOUSEEVENTF_RIGHTUP);
         }
 
         public static bool MiddleDown()
         {
-            return Push(NativeMethods.LPINPUT.MouseFlags.MOUSEEVENTF_MIDDLEDOWN);
+            return Push(LPINPUT.MouseFlags.MOUSEEVENTF_MIDDLEDOWN);
         }
 
         public static bool MiddleUp()
         {
-            return Push(NativeMethods.LPINPUT.MouseFlags.MOUSEEVENTF_MIDDLEUP);
+            return Push(LPINPUT.MouseFlags.MOUSEEVENTF_MIDDLEUP);
         }
 
         public static void Delay()
@@ -100,10 +100,10 @@ namespace net.r_eg.MoConTool.Simulators
             throw new NotSupportedException($"Code {code} is not supported as a Up-code.");
         }
 
-        private static bool Push(NativeMethods.LPINPUT.MouseFlags flags)
+        private static bool Push(LPINPUT.MouseFlags flags)
         {
-            var pInputs = new NativeMethods.LPINPUT() {
-                type = NativeMethods.LPINPUT.InputType.InputMouse
+            var pInputs = new LPINPUT() {
+                type = LPINPUT.InputType.InputMouse
             };
 
             pInputs.mikihi.mi.dwFlags = flags;

@@ -441,12 +441,12 @@
             this.numDoubleClick.Name = "numDoubleClick";
             this.numDoubleClick.Size = new System.Drawing.Size(109, 20);
             this.numDoubleClick.TabIndex = 19;
+            this.toolTipMain.SetToolTip(this.numDoubleClick, "Recommended: 80 - 120 ms");
             this.numDoubleClick.ValueChanged += new System.EventHandler(this.numDoubleClick_ValueChanged);
             // 
             // chkDoubleClick
             // 
             this.chkDoubleClick.AutoSize = true;
-            this.chkDoubleClick.Enabled = false;
             this.chkDoubleClick.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chkDoubleClick.Location = new System.Drawing.Point(12, 76);
             this.chkDoubleClick.Name = "chkDoubleClick";
@@ -507,6 +507,7 @@
             this.numInterruptedClick.Name = "numInterruptedClick";
             this.numInterruptedClick.Size = new System.Drawing.Size(109, 20);
             this.numInterruptedClick.TabIndex = 14;
+            this.toolTipMain.SetToolTip(this.numInterruptedClick, "Recommended: 20 - 70 ms");
             this.numInterruptedClick.ValueChanged += new System.EventHandler(this.numInterruptedClick_ValueChanged);
             // 
             // chkInterruptedClick

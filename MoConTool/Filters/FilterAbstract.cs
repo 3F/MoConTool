@@ -23,13 +23,15 @@
 */
 
 using System;
+using System.Runtime.InteropServices;
+using net.r_eg.MoConTool.WinAPI;
 
 namespace net.r_eg.MoConTool.Filters
 {
     using LPARAM = IntPtr;
     using WPARAM = UIntPtr;
 
-    public abstract class FilterAbstract: IMouseListener
+    public abstract class FilterAbstract: IMouseListener, IMouseListenerSvc
     {
         /// <summary>
         /// When result of filter prevents message for any system handlers.
@@ -120,11 +122,31 @@ namespace net.r_eg.MoConTool.Filters
             Name    = name;
         }
 
-        protected void trigger()
+        void IMouseListenerSvc.trigger()
         {
             unchecked {
                 Triggering(this, new DataArgs<ulong>(++TriggerCount));
             }
+        }
+
+        protected bool isLMR(WPARAM wParam)
+        {
+            if(SysMessages.EqOr(wParam,
+                                    SysMessages.WM_LBUTTONDOWN,
+                                    SysMessages.WM_LBUTTONUP,
+                                    SysMessages.WM_MBUTTONDOWN,
+                                    SysMessages.WM_MBUTTONUP,
+                                    SysMessages.WM_RBUTTONDOWN,
+                                    SysMessages.WM_RBUTTONUP))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        protected MSLLHOOKSTRUCT getMSLLHOOKSTRUCT(LPARAM lParam)
+        {
+            return (MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT));
         }
     }
 }
