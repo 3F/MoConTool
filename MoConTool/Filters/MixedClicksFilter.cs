@@ -33,19 +33,71 @@ namespace net.r_eg.MoConTool.Filters
 
     public class MixedClicksFilter: FilterAbstract, IMouseListener
     {
+        private LMRContainer lmr;
+
+        internal sealed class LMR: LMRAbstract, ILMR
+        {
+            private volatile bool isPressedDown = false;
+            private volatile bool isPressedUp = false;
+            private volatile bool toAbortNext = false;
+
+            private object sync = new object();
+
+            public override FilterResult process(int nCode, WPARAM wParam, LPARAM lParam)
+            {
+                lock(sync)
+                {
+                    if(toAbortNext) {
+                        toAbortNext = false;
+                        LSender.Send(this, $"Prevent '{wParam}' because of previous mixed code.", Message.Level.Info);
+                        return FilterResult.Abort;
+                    }
+
+                    if(isPressedDown && SysMessages.Eq(wParam, CodeDown)) {
+                        toAbortNext = true;
+                        LSender.Send(this, $"Found mixed {wParam}", Message.Level.Info);
+                        parent.trigger();
+                        return FilterResult.Abort;
+                    }
+
+                    if(isPressedUp && SysMessages.Eq(wParam, CodeUp)) {
+                        LSender.Send(this, $"Found mixed {wParam}", Message.Level.Info);
+                        parent.trigger();
+                        return FilterResult.Abort;
+                    }
+
+                    if(SysMessages.Eq(wParam, CodeDown)) {
+                        isPressedDown = true;
+                        isPressedUp = false;
+                    }
+                    else if(SysMessages.Eq(wParam, CodeUp)) {
+                        isPressedDown = false;
+                        isPressedUp = true;
+                    }
+
+                    LSender.Send(this, $"Continue {wParam}", Message.Level.Trace);
+                    return FilterResult.Continue;
+                }
+            }
+        }
+
         /// <param name="nCode">A code that uses to determine how to process the message.</param>
         /// <param name="wParam">The identifier of the mouse message.</param>
         /// <param name="lParam">A pointer to an MSLLHOOKSTRUCT structure.</param>
         /// <returns></returns>
         public override FilterResult msg(int nCode, WPARAM wParam, LPARAM lParam)
         {
-            return FilterResult.Continue;
+            if(!isLMR(wParam)) {
+                return FilterResult.Continue;
+            }
+
+            return lmr.process(nCode, wParam, lParam);
         }
 
         public MixedClicksFilter()
             : base("MixedClicks")
         {
-
+            lmr = new LMRContainer(this, typeof(LMR));
         }
     }
 }

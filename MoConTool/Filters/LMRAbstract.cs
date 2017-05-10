@@ -31,11 +31,20 @@ namespace net.r_eg.MoConTool.Filters
 
     internal abstract class LMRAbstract: ILMR
     {
-        protected uint codeDown;
-        protected uint codeUp;
         protected IMouseListenerSvc parent;
 
         protected DateTime stamp = DateTime.Now;
+
+        protected uint CodeDown
+        {
+            get;
+            set;
+        }
+        protected uint CodeUp
+        {
+            get;
+            set;
+        }
 
         public abstract FilterResult process(int nCode, WPARAM wParam, LPARAM lParam);
 
@@ -45,9 +54,9 @@ namespace net.r_eg.MoConTool.Filters
                 throw new ArgumentNullException();
             }
 
-            this.codeDown   = codeDown;
-            this.codeUp     = codeUp;
-            this.parent     = parent;
+            CodeDown    = codeDown;
+            CodeUp      = codeUp;
+            this.parent = parent;
         }
     }
 }

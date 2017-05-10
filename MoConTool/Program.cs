@@ -30,7 +30,7 @@ namespace net.r_eg.MoConTool
 {
     internal static class Program
     {
-        internal const string ARGS_DEFAULT = "-InterruptedClick L 30 -DoubleClicks L 118";
+        internal const string ARGS_DEFAULT = "-InterruptedClick L 30 -MixedClicks L -DoubleClicks L 118";
 
         /// <summary>
         /// The main entry point for the application.

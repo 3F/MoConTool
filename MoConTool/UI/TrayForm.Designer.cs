@@ -472,7 +472,6 @@
             // chkMixedClicks
             // 
             this.chkMixedClicks.AutoSize = true;
-            this.chkMixedClicks.Enabled = false;
             this.chkMixedClicks.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chkMixedClicks.Location = new System.Drawing.Point(12, 44);
             this.chkMixedClicks.Name = "chkMixedClicks";

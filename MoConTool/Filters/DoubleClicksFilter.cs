@@ -49,11 +49,11 @@ namespace net.r_eg.MoConTool.Filters
 
                     if(isPrevCodeDown) {
                         isPrevCodeDown = false;
-                        LSender.Send(this, $"Prevent '{wParam}' because of previous {codeDown}", Message.Level.Debug);
+                        LSender.Send(this, $"Prevent '{wParam}' because of previous {CodeDown}", Message.Level.Debug);
                         return FilterResult.Abort;
                     }
 
-                    if(SysMessages.Eq(wParam, codeDown) && delta < parent.Value) {
+                    if(SysMessages.Eq(wParam, CodeDown) && delta < parent.Value) {
                         LSender.Send(this, $"Found double-click bug of '{wParam}' because of delta {delta}", Message.Level.Info);
                         isPrevCodeDown = true;
 
@@ -61,7 +61,7 @@ namespace net.r_eg.MoConTool.Filters
                         return FilterResult.Abort;
                     }
 
-                    if(SysMessages.Eq(wParam, codeDown)) {
+                    if(SysMessages.Eq(wParam, CodeDown)) {
                         stamp = DateTime.Now;
                     }
 

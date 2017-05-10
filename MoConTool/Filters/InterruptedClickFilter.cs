@@ -89,14 +89,14 @@ namespace net.r_eg.MoConTool.Filters
                                     continue;
                                 }
 
-                                if(SysMessages.Eq(cmd1.wParam, codeUp))
+                                if(SysMessages.Eq(cmd1.wParam, CodeUp))
                                 {
                                     // now we should look possible bug: down ... [up, down] ... up
                                     Thread.Sleep((int)parent.Value); // to wait new codes
                                     break;
                                 }
 
-                                if(SysMessages.Eq(cmd1.wParam, codeDown))
+                                if(SysMessages.Eq(cmd1.wParam, CodeDown))
                                 {
                                     shadowClick = true;
                                     sendCodeDown();
@@ -124,10 +124,10 @@ namespace net.r_eg.MoConTool.Filters
                                 cmd2 = new TCode();
                             }
 
-                            if(SysMessages.Eq(cmd1.wParam, codeUp)
-                                && SysMessages.Eq(cmd2.wParam, codeDown))
+                            if(SysMessages.Eq(cmd1.wParam, CodeUp)
+                                && SysMessages.Eq(cmd2.wParam, CodeDown))
                             {
-                                LSender.Send(this, $"Found bug with recovering of codes {codeUp} -> {codeDown}", Message.Level.Info);
+                                LSender.Send(this, $"Found bug with recovering of codes {CodeUp} -> {CodeDown}", Message.Level.Info);
                                 parent.trigger();
                             }
                             else {
@@ -151,12 +151,12 @@ namespace net.r_eg.MoConTool.Filters
 
             private void sendCode(TCode cmd)
             {
-                if(SysMessages.Eq(cmd.wParam, codeDown)) {
+                if(SysMessages.Eq(cmd.wParam, CodeDown)) {
                     shadowClick = true;
                     sendCodeDown();
                     shadowClick = false;
                 }
-                else if(SysMessages.Eq(cmd.wParam, codeUp)) {
+                else if(SysMessages.Eq(cmd.wParam, CodeUp)) {
                     shadowClick = true;
                     sendCodeUp();
                     shadowClick = false;
@@ -165,7 +165,7 @@ namespace net.r_eg.MoConTool.Filters
 
             private void sendCodeDown()
             {
-                MouseSimulator.Down(codeDown);
+                MouseSimulator.Down(CodeDown);
 
                 MouseSimulator.Delay();
                 stamp = DateTime.Now;
@@ -173,7 +173,7 @@ namespace net.r_eg.MoConTool.Filters
 
             private void sendCodeUp()
             {
-                MouseSimulator.Up(codeUp);
+                MouseSimulator.Up(CodeUp);
 
                 MouseSimulator.Delay();
                 stamp = DateTime.Now;
