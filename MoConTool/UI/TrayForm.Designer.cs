@@ -47,6 +47,7 @@
             this.panelSmallLine = new System.Windows.Forms.Panel();
             this.chkPlug = new System.Windows.Forms.CheckBox();
             this.panelMain = new System.Windows.Forms.Panel();
+            this.numHyperScrollLimit = new System.Windows.Forms.NumericUpDown();
             this.chkDoubleBtnR = new System.Windows.Forms.CheckBox();
             this.chkDoubleBtnM = new System.Windows.Forms.CheckBox();
             this.chkDoubleBtnL = new System.Windows.Forms.CheckBox();
@@ -57,7 +58,7 @@
             this.chkInterruptedBtnM = new System.Windows.Forms.CheckBox();
             this.chkInterruptedBtnL = new System.Windows.Forms.CheckBox();
             this.labelHyperactiveScroll = new System.Windows.Forms.Label();
-            this.numHyperactiveScroll = new System.Windows.Forms.NumericUpDown();
+            this.numHyperScrollCapacity = new System.Windows.Forms.NumericUpDown();
             this.chkHyperactiveScroll = new System.Windows.Forms.CheckBox();
             this.labelDoubleClick = new System.Windows.Forms.Label();
             this.numDoubleClick = new System.Windows.Forms.NumericUpDown();
@@ -72,7 +73,8 @@
             this.contextMenuDebug.SuspendLayout();
             this.panelSmallLine.SuspendLayout();
             this.panelMain.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numHyperactiveScroll)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numHyperScrollLimit)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numHyperScrollCapacity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numDoubleClick)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numInterruptedClick)).BeginInit();
             this.SuspendLayout();
@@ -180,33 +182,33 @@
             this.toolStripSeparator3,
             this.menuClear});
             this.contextMenuDebug.Name = "contextMenuDebug";
-            this.contextMenuDebug.Size = new System.Drawing.Size(153, 98);
+            this.contextMenuDebug.Size = new System.Drawing.Size(149, 76);
             this.contextMenuDebug.MouseLeave += new System.EventHandler(this.contextMenuDebug_MouseLeave);
             this.contextMenuDebug.MouseHover += new System.EventHandler(this.contextMenuDebug_MouseHover);
             // 
             // menuCopy
             // 
             this.menuCopy.Name = "menuCopy";
-            this.menuCopy.Size = new System.Drawing.Size(152, 22);
+            this.menuCopy.Size = new System.Drawing.Size(148, 22);
             this.menuCopy.Text = "Copy selected";
             this.menuCopy.Click += new System.EventHandler(this.menuCopy_Click);
             // 
             // menuSelectAll
             // 
             this.menuSelectAll.Name = "menuSelectAll";
-            this.menuSelectAll.Size = new System.Drawing.Size(152, 22);
+            this.menuSelectAll.Size = new System.Drawing.Size(148, 22);
             this.menuSelectAll.Text = "Select All";
             this.menuSelectAll.Click += new System.EventHandler(this.menuSelectAll_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(145, 6);
             // 
             // menuClear
             // 
             this.menuClear.Name = "menuClear";
-            this.menuClear.Size = new System.Drawing.Size(152, 22);
+            this.menuClear.Size = new System.Drawing.Size(148, 22);
             this.menuClear.Text = "Clear";
             this.menuClear.Click += new System.EventHandler(this.menuClear_Click);
             // 
@@ -235,6 +237,7 @@
             // 
             // panelMain
             // 
+            this.panelMain.Controls.Add(this.numHyperScrollLimit);
             this.panelMain.Controls.Add(this.chkDoubleBtnR);
             this.panelMain.Controls.Add(this.chkDoubleBtnM);
             this.panelMain.Controls.Add(this.chkDoubleBtnL);
@@ -245,7 +248,7 @@
             this.panelMain.Controls.Add(this.chkInterruptedBtnM);
             this.panelMain.Controls.Add(this.chkInterruptedBtnL);
             this.panelMain.Controls.Add(this.labelHyperactiveScroll);
-            this.panelMain.Controls.Add(this.numHyperactiveScroll);
+            this.panelMain.Controls.Add(this.numHyperScrollCapacity);
             this.panelMain.Controls.Add(this.chkHyperactiveScroll);
             this.panelMain.Controls.Add(this.labelDoubleClick);
             this.panelMain.Controls.Add(this.numDoubleClick);
@@ -259,6 +262,22 @@
             this.panelMain.Name = "panelMain";
             this.panelMain.Size = new System.Drawing.Size(496, 135);
             this.panelMain.TabIndex = 16;
+            // 
+            // numHyperScrollLimit
+            // 
+            this.numHyperScrollLimit.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.numHyperScrollLimit.Location = new System.Drawing.Point(423, 108);
+            this.numHyperScrollLimit.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
+            this.numHyperScrollLimit.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.numHyperScrollLimit.Name = "numHyperScrollLimit";
+            this.numHyperScrollLimit.Size = new System.Drawing.Size(70, 20);
+            this.numHyperScrollLimit.TabIndex = 33;
+            this.toolTipMain.SetToolTip(this.numHyperScrollLimit, "Range of limit in ms. Recommended: 150 - 300 ms");
+            this.numHyperScrollLimit.ValueChanged += new System.EventHandler(this.numHyperScrollLimit_ValueChanged);
             // 
             // chkDoubleBtnR
             // 
@@ -375,36 +394,31 @@
             this.labelHyperactiveScroll.Cursor = System.Windows.Forms.Cursors.Hand;
             this.labelHyperactiveScroll.Location = new System.Drawing.Point(266, 105);
             this.labelHyperactiveScroll.Name = "labelHyperactiveScroll";
-            this.labelHyperactiveScroll.Size = new System.Drawing.Size(111, 23);
+            this.labelHyperactiveScroll.Size = new System.Drawing.Size(100, 23);
             this.labelHyperactiveScroll.TabIndex = 23;
             this.labelHyperactiveScroll.Text = "0";
             this.labelHyperactiveScroll.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.labelHyperactiveScroll.Click += new System.EventHandler(this.labelHyperactiveScroll_Click);
             // 
-            // numHyperactiveScroll
+            // numHyperScrollCapacity
             // 
-            this.numHyperactiveScroll.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.numHyperactiveScroll.DecimalPlaces = 2;
-            this.numHyperactiveScroll.Increment = new decimal(new int[] {
-            5,
-            0,
-            0,
-            65536});
-            this.numHyperactiveScroll.Location = new System.Drawing.Point(383, 108);
-            this.numHyperactiveScroll.Maximum = new decimal(new int[] {
+            this.numHyperScrollCapacity.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.numHyperScrollCapacity.Location = new System.Drawing.Point(372, 108);
+            this.numHyperScrollCapacity.Margin = new System.Windows.Forms.Padding(3, 3, 1, 3);
+            this.numHyperScrollCapacity.Maximum = new decimal(new int[] {
             10000,
             0,
             0,
             0});
-            this.numHyperactiveScroll.Name = "numHyperactiveScroll";
-            this.numHyperactiveScroll.Size = new System.Drawing.Size(109, 20);
-            this.numHyperactiveScroll.TabIndex = 22;
-            this.numHyperactiveScroll.ValueChanged += new System.EventHandler(this.numHyperactiveScroll_ValueChanged);
+            this.numHyperScrollCapacity.Name = "numHyperScrollCapacity";
+            this.numHyperScrollCapacity.Size = new System.Drawing.Size(50, 20);
+            this.numHyperScrollCapacity.TabIndex = 22;
+            this.toolTipMain.SetToolTip(this.numHyperScrollCapacity, "Limit of codes. Recommended: 9-14");
+            this.numHyperScrollCapacity.ValueChanged += new System.EventHandler(this.numHyperScrollCapacity_ValueChanged);
             // 
             // chkHyperactiveScroll
             // 
             this.chkHyperactiveScroll.AutoSize = true;
-            this.chkHyperactiveScroll.Enabled = false;
             this.chkHyperactiveScroll.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chkHyperactiveScroll.Location = new System.Drawing.Point(12, 109);
             this.chkHyperactiveScroll.Name = "chkHyperactiveScroll";
@@ -421,7 +435,7 @@
             this.labelDoubleClick.Cursor = System.Windows.Forms.Cursors.Hand;
             this.labelDoubleClick.Location = new System.Drawing.Point(266, 73);
             this.labelDoubleClick.Name = "labelDoubleClick";
-            this.labelDoubleClick.Size = new System.Drawing.Size(111, 23);
+            this.labelDoubleClick.Size = new System.Drawing.Size(100, 23);
             this.labelDoubleClick.TabIndex = 20;
             this.labelDoubleClick.Text = "0";
             this.labelDoubleClick.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -436,14 +450,14 @@
             0,
             0,
             65536});
-            this.numDoubleClick.Location = new System.Drawing.Point(383, 76);
+            this.numDoubleClick.Location = new System.Drawing.Point(372, 76);
             this.numDoubleClick.Maximum = new decimal(new int[] {
             10000,
             0,
             0,
             0});
             this.numDoubleClick.Name = "numDoubleClick";
-            this.numDoubleClick.Size = new System.Drawing.Size(109, 20);
+            this.numDoubleClick.Size = new System.Drawing.Size(120, 20);
             this.numDoubleClick.TabIndex = 19;
             this.toolTipMain.SetToolTip(this.numDoubleClick, "Recommended: 80 - 120 ms");
             this.numDoubleClick.ValueChanged += new System.EventHandler(this.numDoubleClick_ValueChanged);
@@ -467,7 +481,7 @@
             this.labelMixedClicks.Cursor = System.Windows.Forms.Cursors.Hand;
             this.labelMixedClicks.Location = new System.Drawing.Point(267, 41);
             this.labelMixedClicks.Name = "labelMixedClicks";
-            this.labelMixedClicks.Size = new System.Drawing.Size(110, 23);
+            this.labelMixedClicks.Size = new System.Drawing.Size(99, 23);
             this.labelMixedClicks.TabIndex = 17;
             this.labelMixedClicks.Text = "0";
             this.labelMixedClicks.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -492,7 +506,7 @@
             this.labelInterruptedClick.Cursor = System.Windows.Forms.Cursors.Hand;
             this.labelInterruptedClick.Location = new System.Drawing.Point(267, 9);
             this.labelInterruptedClick.Name = "labelInterruptedClick";
-            this.labelInterruptedClick.Size = new System.Drawing.Size(110, 23);
+            this.labelInterruptedClick.Size = new System.Drawing.Size(99, 23);
             this.labelInterruptedClick.TabIndex = 15;
             this.labelInterruptedClick.Text = "0";
             this.labelInterruptedClick.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -501,16 +515,16 @@
             // numInterruptedClick
             // 
             this.numInterruptedClick.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.numInterruptedClick.Location = new System.Drawing.Point(383, 12);
+            this.numInterruptedClick.Location = new System.Drawing.Point(372, 12);
             this.numInterruptedClick.Maximum = new decimal(new int[] {
             10000,
             0,
             0,
             0});
             this.numInterruptedClick.Name = "numInterruptedClick";
-            this.numInterruptedClick.Size = new System.Drawing.Size(109, 20);
+            this.numInterruptedClick.Size = new System.Drawing.Size(120, 20);
             this.numInterruptedClick.TabIndex = 14;
-            this.toolTipMain.SetToolTip(this.numInterruptedClick, "Recommended: 20 - 70 ms");
+            this.toolTipMain.SetToolTip(this.numInterruptedClick, "Recommended: 10 - 70 ms");
             this.numInterruptedClick.ValueChanged += new System.EventHandler(this.numInterruptedClick_ValueChanged);
             // 
             // chkInterruptedClick
@@ -549,7 +563,8 @@
             this.panelSmallLine.PerformLayout();
             this.panelMain.ResumeLayout(false);
             this.panelMain.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numHyperactiveScroll)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numHyperScrollLimit)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numHyperScrollCapacity)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numDoubleClick)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numInterruptedClick)).EndInit();
             this.ResumeLayout(false);
@@ -573,7 +588,7 @@
         private System.Windows.Forms.CheckBox chkPlug;
         private System.Windows.Forms.Panel panelMain;
         private System.Windows.Forms.Label labelHyperactiveScroll;
-        private System.Windows.Forms.NumericUpDown numHyperactiveScroll;
+        private System.Windows.Forms.NumericUpDown numHyperScrollCapacity;
         private System.Windows.Forms.CheckBox chkHyperactiveScroll;
         private System.Windows.Forms.Label labelDoubleClick;
         private System.Windows.Forms.NumericUpDown numDoubleClick;
@@ -598,6 +613,7 @@
         private System.Windows.Forms.CheckBox chkInterruptedBtnR;
         private System.Windows.Forms.CheckBox chkInterruptedBtnM;
         private System.Windows.Forms.CheckBox chkInterruptedBtnL;
+        private System.Windows.Forms.NumericUpDown numHyperScrollLimit;
     }
 }
 

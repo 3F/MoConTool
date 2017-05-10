@@ -33,19 +33,58 @@ namespace net.r_eg.MoConTool.Filters
 
     public class HyperactiveScrollFilter: FilterAbstract, IMouseListener
     {
+        public sealed class TData
+        {
+            public uint limit = 250;
+            public int capacity = 10;
+            public int acceleration = 16;
+        }
+
+        private volatile uint prevStamp = 0;
+        private volatile int count = 0;
+
         /// <param name="nCode">A code that uses to determine how to process the message.</param>
         /// <param name="wParam">The identifier of the mouse message.</param>
         /// <param name="lParam">A pointer to an MSLLHOOKSTRUCT structure.</param>
         /// <returns></returns>
         public override FilterResult msg(int nCode, WPARAM wParam, LPARAM lParam)
         {
+            if(Data == null || !SysMessages.EqOr(wParam, SysMessages.WM_MOUSEWHEEL)) {
+                //TODO: SysMessages.WM_MOUSEHWHEEL
+                return FilterResult.Continue;
+            }
+            var llhook = getMSLLHOOKSTRUCT(lParam);
+
+            uint delta = llhook.time - prevStamp;
+            var v = (TData)Data;
+
+            if(delta > v.limit) {
+                count = 0;
+            }
+            else {
+                ++count;
+            }
+
+            if(count > v.capacity) {
+                LSender.Send(this, $"Scroll has been filtered {wParam}/{count} = {v.capacity}:{v.limit}", Message.Level.Info);
+                ((IMouseListenerSvc)this).trigger();
+                return FilterResult.Abort;
+            }
+
+            //if(delta < v.acceleration && count > v.capacity) {
+            //    ++accelerationCount;
+            //}
+
+            LSender.Send(this, $"MouseData: count {count} - delta {delta}", Message.Level.Trace);
+            prevStamp = llhook.time;
+
             return FilterResult.Continue;
         }
 
         public HyperactiveScrollFilter()
             : base("HyperactiveScroll")
         {
-
+            Data = new TData();
         }
     }
 }

@@ -159,7 +159,13 @@ namespace net.r_eg.MoConTool.UI
 
             numInterruptedClick.Value   = (decimal)fic.Value;
             numDoubleClick.Value        = (decimal)fdc.Value;
-            numHyperactiveScroll.Value  = (decimal)fhs.Value;
+
+            if(fhs.Data == null) {
+                fhs.Data = new HyperactiveScrollFilter.TData();
+            }
+            var v = (HyperactiveScrollFilter.TData)fhs.Data;
+            numHyperScrollCapacity.Value    = v.capacity;
+            numHyperScrollLimit.Value       = v.limit;
         }
 
         private void LSender_SReceived(object sender, Conari.Log.Message e)
@@ -364,9 +370,20 @@ namespace net.r_eg.MoConTool.UI
             fdc.Value = (double)numDoubleClick.Value;
         }
 
-        private void numHyperactiveScroll_ValueChanged(object sender, EventArgs e)
+        private void numHyperScrollCapacity_ValueChanged(object sender, EventArgs e)
         {
-            fhs.Value = (double)numHyperactiveScroll.Value;
+            if(fhs.Data == null) {
+                fhs.Data = new HyperactiveScrollFilter.TData();
+            }
+            ((HyperactiveScrollFilter.TData)fhs.Data).capacity = (int)numHyperScrollCapacity.Value;
+        }
+
+        private void numHyperScrollLimit_ValueChanged(object sender, EventArgs e)
+        {
+            if(fhs.Data == null) {
+                fhs.Data = new HyperactiveScrollFilter.TData();
+            }
+            ((HyperactiveScrollFilter.TData)fhs.Data).limit = (uint)numHyperScrollLimit.Value;
         }
 
         private void chkInterruptedBtnL_CheckedChanged(object sender, EventArgs e)
