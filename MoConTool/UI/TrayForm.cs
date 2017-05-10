@@ -23,6 +23,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -35,7 +36,7 @@ namespace net.r_eg.MoConTool.UI
 {
     public partial class TrayForm: Form
     {
-        private const int MAX_DBG_RECORDS = 4000;
+        internal const int MAX_DBG_RECORDS = 4000;
 
         private IBootloader loader;
         private IMokona svc;
@@ -47,6 +48,11 @@ namespace net.r_eg.MoConTool.UI
 
         private bool closing = false;
         private Size origin;
+
+        private bool suspendedLog;
+        private List<object> logmsg = new List<object>();
+
+        private object sync = new object();
 
         public TrayForm(IBootloader loader)
         {
@@ -162,10 +168,45 @@ namespace net.r_eg.MoConTool.UI
                 return;
             }
 
-            if(listBoxDebug.Items.Count > MAX_DBG_RECORDS) {
-                uiAction(() => listBoxDebug.Items.RemoveAt(listBoxDebug.Items.Count - 1));
+            string msg = $"{e.stamp.ToString("HH:mm:ss.fffff")}] {e.content} :: {sender.ToString()}";
+            if(suspendedLog) {
+                logmsg.Add(msg);
+                return;
             }
-            uiAction(() => listBoxDebug.Items.Insert(0, $"{e.stamp.ToString("hh:mm:ss.fffff")}] {e.content} :: {sender.ToString()}"));
+
+            uiAction(() =>
+            {
+                lock(sync)
+                {
+                    if(listBoxDebug.Items.Count < MAX_DBG_RECORDS)
+                    {
+                        if(logmsg.Count > 0) {
+                            listBoxDebug.Items.AddRange(logmsg.ToArray());
+                            logmsg.Clear();
+                        }
+                        listBoxDebug.Items.Add(msg);
+                        listBoxDebug.TopIndex = listBoxDebug.Items.Count - 1;
+                        return;
+                    }
+
+                    // the RemoveAt() is much more expensive than [Copy + Clear + AddRange] because of logic for moving elements to removed index.
+                    // But unfortunately we can't access to array of ListBox elements, 
+                    // and we can't copy starting with specific index like for Array.Copy ...seriously, who designed this component >(
+                    // well, like this:
+                    object[] origin = new object[MAX_DBG_RECORDS];
+                    listBoxDebug.Items.CopyTo(origin, Math.Max(0, listBoxDebug.Items.Count - MAX_DBG_RECORDS));
+
+                    // then finally:
+                    int maxdel      = (int)(MAX_DBG_RECORDS * 0.75);
+                    object[] dest   = new object[MAX_DBG_RECORDS - maxdel];
+                    Array.Copy(origin, maxdel, dest, 0, dest.Length);
+
+                    listBoxDebug.SuspendLayout();
+                    listBoxDebug.Items.Clear();
+                    listBoxDebug.Items.AddRange(dest);
+                    listBoxDebug.ResumeLayout();
+                }
+            });
         }
 
         private void TrayForm_Load(object sender, EventArgs e)
@@ -271,6 +312,26 @@ namespace net.r_eg.MoConTool.UI
             if(!chkDebug.Checked) {
                 uiAction(() => listBoxDebug.Items.Clear());
             }
+        }
+
+        private void listBoxDebug_MouseHover(object sender, EventArgs e)
+        {
+            suspendedLog = true;
+        }
+
+        private void listBoxDebug_MouseLeave(object sender, EventArgs e)
+        {
+            suspendedLog = false;
+        }
+
+        private void contextMenuDebug_MouseHover(object sender, EventArgs e)
+        {
+            suspendedLog = true;
+        }
+
+        private void contextMenuDebug_MouseLeave(object sender, EventArgs e)
+        {
+            suspendedLog = false;
         }
 
         private void labelInterruptedClick_Click(object sender, EventArgs e)

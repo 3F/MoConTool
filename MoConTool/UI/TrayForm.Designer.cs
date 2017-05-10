@@ -169,6 +169,8 @@
             this.listBoxDebug.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.listBoxDebug.Size = new System.Drawing.Size(514, 184);
             this.listBoxDebug.TabIndex = 14;
+            this.listBoxDebug.MouseLeave += new System.EventHandler(this.listBoxDebug_MouseLeave);
+            this.listBoxDebug.MouseHover += new System.EventHandler(this.listBoxDebug_MouseHover);
             // 
             // contextMenuDebug
             // 
@@ -178,31 +180,33 @@
             this.toolStripSeparator3,
             this.menuClear});
             this.contextMenuDebug.Name = "contextMenuDebug";
-            this.contextMenuDebug.Size = new System.Drawing.Size(149, 76);
+            this.contextMenuDebug.Size = new System.Drawing.Size(153, 98);
+            this.contextMenuDebug.MouseLeave += new System.EventHandler(this.contextMenuDebug_MouseLeave);
+            this.contextMenuDebug.MouseHover += new System.EventHandler(this.contextMenuDebug_MouseHover);
             // 
             // menuCopy
             // 
             this.menuCopy.Name = "menuCopy";
-            this.menuCopy.Size = new System.Drawing.Size(148, 22);
+            this.menuCopy.Size = new System.Drawing.Size(152, 22);
             this.menuCopy.Text = "Copy selected";
             this.menuCopy.Click += new System.EventHandler(this.menuCopy_Click);
             // 
             // menuSelectAll
             // 
             this.menuSelectAll.Name = "menuSelectAll";
-            this.menuSelectAll.Size = new System.Drawing.Size(148, 22);
+            this.menuSelectAll.Size = new System.Drawing.Size(152, 22);
             this.menuSelectAll.Text = "Select All";
             this.menuSelectAll.Click += new System.EventHandler(this.menuSelectAll_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(145, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
             // 
             // menuClear
             // 
             this.menuClear.Name = "menuClear";
-            this.menuClear.Size = new System.Drawing.Size(148, 22);
+            this.menuClear.Size = new System.Drawing.Size(152, 22);
             this.menuClear.Text = "Clear";
             this.menuClear.Click += new System.EventHandler(this.menuClear_Click);
             // 
