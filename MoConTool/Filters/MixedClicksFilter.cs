@@ -35,16 +35,26 @@ namespace net.r_eg.MoConTool.Filters
     {
         private LMRContainer lmr;
 
+        public sealed class TData
+        {
+            public bool onlyDownCodes = true;
+        }
+
         internal sealed class LMR: LMRAbstract, ILMR
         {
-            private volatile bool isPressedDown = false;
-            private volatile bool isPressedUp = false;
-            private volatile bool toAbortNext = false;
+            private volatile bool isBtnDown     = false;
+            private volatile bool isBtnUp       = false;
+            private volatile bool toAbortNext   = false;
 
             private object sync = new object();
 
             public override FilterResult process(int nCode, WPARAM wParam, LPARAM lParam)
             {
+                if(parent.Data == null) {
+                    parent.Data = new TData();
+                }
+                var v = (TData)parent.Data;
+
                 lock(sync)
                 {
                     if(toAbortNext) {
@@ -53,26 +63,26 @@ namespace net.r_eg.MoConTool.Filters
                         return FilterResult.Abort;
                     }
 
-                    if(isPressedDown && SysMessages.Eq(wParam, CodeDown)) {
+                    if(isBtnDown && SysMessages.Eq(wParam, CodeDown)) {
                         toAbortNext = true;
                         LSender.Send(this, $"Found mixed {wParam}", Message.Level.Info);
                         parent.trigger();
                         return FilterResult.Abort;
                     }
 
-                    if(isPressedUp && SysMessages.Eq(wParam, CodeUp)) {
+                    if(!v.onlyDownCodes && (isBtnUp && SysMessages.Eq(wParam, CodeUp))) {
                         LSender.Send(this, $"Found mixed {wParam}", Message.Level.Info);
                         parent.trigger();
                         return FilterResult.Abort;
                     }
 
                     if(SysMessages.Eq(wParam, CodeDown)) {
-                        isPressedDown = true;
-                        isPressedUp = false;
+                        isBtnDown = true;
+                        isBtnUp = false;
                     }
                     else if(SysMessages.Eq(wParam, CodeUp)) {
-                        isPressedDown = false;
-                        isPressedUp = true;
+                        isBtnDown = false;
+                        isBtnUp = true;
                     }
 
                     LSender.Send(this, $"Continue {wParam}", Message.Level.Trace);
@@ -97,7 +107,8 @@ namespace net.r_eg.MoConTool.Filters
         public MixedClicksFilter()
             : base("MixedClicks")
         {
-            lmr = new LMRContainer(this, typeof(LMR));
+            Data    = new TData();
+            lmr     = new LMRContainer(this, typeof(LMR));
         }
     }
 }

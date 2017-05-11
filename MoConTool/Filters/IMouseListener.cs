@@ -23,6 +23,7 @@
 */
 
 using System;
+using System.Collections.Concurrent;
 
 namespace net.r_eg.MoConTool.Filters
 {
@@ -50,6 +51,11 @@ namespace net.r_eg.MoConTool.Filters
         /// The purpose of the filter.
         /// </summary>
         MouseState.Flags Handler { get; set; }
+
+        /// <summary>
+        /// Indicates via flags that filter generates own codes if true.
+        /// </summary>
+        ConcurrentDictionary<MouseState.Flags, bool> ReCodes { get; }
 
         /// <summary>
         /// A common value for control.

@@ -63,10 +63,10 @@ namespace net.r_eg.MoConTool
                 unregister();
                 Filters.register(new CommonFilter());
 
-                Filters.register(new InterruptedClickFilter());
                 Filters.register(new MixedClicksFilter());
                 Filters.register(new DoubleClicksFilter());
-                
+                Filters.register(new InterruptedClickFilter());
+
                 Filters.register(new HyperactiveScrollFilter());
                 Filters.register(new MouseFilter());
             }

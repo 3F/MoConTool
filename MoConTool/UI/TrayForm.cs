@@ -163,9 +163,22 @@ namespace net.r_eg.MoConTool.UI
             if(fhs.Data == null) {
                 fhs.Data = new HyperactiveScrollFilter.TData();
             }
-            var v = (HyperactiveScrollFilter.TData)fhs.Data;
-            numHyperScrollCapacity.Value    = v.capacity;
-            numHyperScrollLimit.Value       = v.limit;
+            var vhs = (HyperactiveScrollFilter.TData)fhs.Data;
+            numHyperScrollCapacity.Value    = vhs.capacity;
+            numHyperScrollLimit.Value       = vhs.limit;
+
+            if(fic.Data == null) {
+                fic.Data = new InterruptedClickFilter.TData();
+            }
+            var vic = (InterruptedClickFilter.TData)fic.Data;
+            numIntClickDeltaMin.Value   = vic.deltaMin;
+            numIntClickDeltaMax.Value   = vic.deltaMax;
+
+            if(fmc.Data == null) {
+                fmc.Data = new MixedClicksFilter.TData();
+            }
+            var vmc = (MixedClicksFilter.TData)fmc.Data;
+            chkMixedClicksOnlyDown.Checked = vmc.onlyDownCodes;
         }
 
         private void LSender_SReceived(object sender, Conari.Log.Message e)
@@ -363,6 +376,30 @@ namespace net.r_eg.MoConTool.UI
         private void numInterruptedClick_ValueChanged(object sender, EventArgs e)
         {
             fic.Value = (double)numInterruptedClick.Value;
+        }
+
+        private void numIntClickDeltaMin_ValueChanged(object sender, EventArgs e)
+        {
+            if(fic.Data == null) {
+                fic.Data = new InterruptedClickFilter.TData();
+            }
+            ((InterruptedClickFilter.TData)fic.Data).deltaMin = (uint)numIntClickDeltaMin.Value;
+        }
+
+        private void numIntClickDeltaMax_ValueChanged(object sender, EventArgs e)
+        {
+            if(fic.Data == null) {
+                fic.Data = new InterruptedClickFilter.TData();
+            }
+            ((InterruptedClickFilter.TData)fic.Data).deltaMax = (uint)numIntClickDeltaMax.Value;
+        }
+
+        private void chkMixedClicksOnlyDown_CheckedChanged(object sender, EventArgs e)
+        {
+            if(fmc.Data == null) {
+                fmc.Data = new MixedClicksFilter.TData();
+            }
+            ((MixedClicksFilter.TData)fmc.Data).onlyDownCodes = chkMixedClicksOnlyDown.Checked;
         }
 
         private void numDoubleClick_ValueChanged(object sender, EventArgs e)

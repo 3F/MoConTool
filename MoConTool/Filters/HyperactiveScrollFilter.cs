@@ -36,7 +36,7 @@ namespace net.r_eg.MoConTool.Filters
         public sealed class TData
         {
             public uint limit = 250;
-            public int capacity = 10;
+            public int capacity = 14;
             public int acceleration = 16;
         }
 

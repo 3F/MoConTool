@@ -23,6 +23,7 @@
 */
 
 using System;
+using System.Collections.Concurrent;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using net.r_eg.Conari.Log;
@@ -36,6 +37,7 @@ namespace net.r_eg.MoConTool
     using LPARAM = IntPtr;
     using LRESULT = IntPtr;
     using WPARAM = UIntPtr;
+    using ReCodesDict = ConcurrentDictionary<MouseState.Flags, bool>;
 
     public sealed class Mokona: IMokona
     {
@@ -126,8 +128,15 @@ namespace net.r_eg.MoConTool
         /// <returns></returns>
         private LRESULT lowLevelMouseProc(int nCode, WPARAM wParam, LPARAM lParam)
         {
+            int recode = findReCode(wParam);
+
+            int idx = 0;
             foreach(IMouseListener listener in Loader.ActivatedFilters)
             {
+                if(recode != -1 && idx++ <= recode) {
+                    continue;
+                }
+
                 FilterResult act = listener.msg(nCode, wParam, lParam);
 
                 if(act == FilterResult.IgnoreFilters) {
@@ -144,6 +153,43 @@ namespace net.r_eg.MoConTool
             }
 
             return NativeMethods.CallNextHookEx(IntPtr.Zero, nCode, wParam, lParam);
+        }
+
+        private int findReCode(WPARAM wParam)
+        {
+            Func<ReCodesDict, WPARAM, MouseState.Flags, bool> _re = (ReCodesDict _dict, WPARAM _wParam, MouseState.Flags _flags) =>
+            {
+                if(wParam != _wParam || !_dict.ContainsKey(_flags)) {
+                    return false;
+                }
+
+                if(_dict[_flags]) {
+                    _dict[_flags] = false;
+                    return true;
+                }
+                return false;
+            };
+
+            int idx = -1;
+            foreach(IMouseListener listener in Loader.ActivatedFilters)
+            {
+                ++idx;
+                if(listener.ReCodes.Count < 1) {
+                    continue;
+                }
+
+                if(_re(listener.ReCodes, wParam, MouseState.Flags.LeftDown)
+                    || _re(listener.ReCodes, wParam, MouseState.Flags.LeftUp)
+                    || _re(listener.ReCodes, wParam, MouseState.Flags.MiddleDown)
+                    || _re(listener.ReCodes, wParam, MouseState.Flags.MiddleUp)
+                    || _re(listener.ReCodes, wParam, MouseState.Flags.RightDown)
+                    || _re(listener.ReCodes, wParam, MouseState.Flags.RightUp))
+                {
+                    return idx;
+                }
+            }
+
+            return -1;
         }
     }
 }

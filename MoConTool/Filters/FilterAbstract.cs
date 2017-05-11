@@ -23,6 +23,7 @@
 */
 
 using System;
+using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
 using net.r_eg.MoConTool.WinAPI;
 
@@ -64,6 +65,15 @@ namespace net.r_eg.MoConTool.Filters
             get;
             set;
         } = MouseState.Flags.Left | MouseState.Flags.Down | MouseState.Flags.Up;
+
+        /// <summary>
+        /// Indicates via flags that filter generates own codes if true.
+        /// </summary>
+        public ConcurrentDictionary<MouseState.Flags, bool> ReCodes
+        {
+            get;
+            protected set;
+        } = new ConcurrentDictionary<MouseState.Flags, bool>();
 
         /// <summary>
         /// A common value for control.

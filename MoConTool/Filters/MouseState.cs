@@ -23,6 +23,7 @@
 */
 
 using System;
+using net.r_eg.MoConTool.WinAPI;
 
 namespace net.r_eg.MoConTool.Filters
 {
@@ -38,7 +39,42 @@ namespace net.r_eg.MoConTool.Filters
             Up      = 0x10,
             Down    = 0x20,
 
-            LMR = Flags.Left | Flags.Middle | Flags.Right
+            LMR = Flags.Left | Flags.Middle | Flags.Right,
+
+            LeftDown    = Flags.Left | Flags.Down,
+            LeftUp      = Flags.Left | Flags.Up,
+
+            MiddleDown  = Flags.Middle | Flags.Down,
+            MiddleUp    = Flags.Middle | Flags.Up,
+
+            RightDown   = Flags.Right | Flags.Down,
+            RightUp     = Flags.Right | Flags.Up,
+        }
+
+        public static Flags Extract(uint type)
+        {
+            switch(type) {
+                case SysMessages.WM_LBUTTONDOWN: {
+                    return Flags.LeftDown;
+                }
+                case SysMessages.WM_MBUTTONDOWN: {
+                    return Flags.MiddleDown;
+                }
+                case SysMessages.WM_RBUTTONDOWN: {
+                    return Flags.RightDown;
+                }
+                case SysMessages.WM_LBUTTONUP: {
+                    return Flags.LeftUp;
+                }
+                case SysMessages.WM_MBUTTONUP: {
+                    return Flags.MiddleUp;
+                }
+                case SysMessages.WM_RBUTTONUP: {
+                    return Flags.RightUp;
+                }
+            }
+
+            return Flags.None;
         }
 
         public static Flags Extract(string type)

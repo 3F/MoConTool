@@ -39,14 +39,21 @@ namespace net.r_eg.MoConTool.Filters
     {
         private LMRContainer lmr;
 
+        public sealed class TData
+        {
+            public uint deltaMin = 10;
+            public uint deltaMax = 251;
+        }
+
         internal sealed class LMR: LMRAbstract, ILMR
         {
-            private volatile bool shadowClick = false;
-            private volatile bool lockedThread = false;
+            private volatile bool lockedThread  = false;
+            private volatile bool pressedCodeUp = false;
+            private DateTime stampCodeDown      = DateTime.Now;
 
             private object sync = new object();
 
-            private static ConcurrentQueue<TCode> buffer = new ConcurrentQueue<TCode>();
+            private ConcurrentQueue<TCode> buffer = new ConcurrentQueue<TCode>();
 
             private struct TCode
             {
@@ -55,11 +62,42 @@ namespace net.r_eg.MoConTool.Filters
                 public LPARAM lParam;
             }
 
+            private TData Data
+            {
+                get
+                {
+                    if(parent.Data == null) {
+                        parent.Data = new TData();
+                    }
+                    return (TData)parent.Data;
+                }
+            }
+
             public override FilterResult process(int nCode, WPARAM wParam, LPARAM lParam)
             {
-                if(shadowClick) {
-                    LSender.Send(this, $"send {wParam} :: {(DateTime.Now - stamp).TotalMilliseconds}", Message.Level.Debug);
+                //if(shadowClick) { // now it will be processed via ReCodes + lowLevelMouseProc
+                //    return FilterResult.Continue;
+                //}
+
+                if(!pressedCodeUp && SysMessages.Eq(wParam, CodeDown)) {
+                    stampCodeDown = DateTime.Now;
                     return FilterResult.Continue;
+                }
+
+                if(pressedCodeUp && SysMessages.Eq(wParam, CodeUp)) {
+                    return FilterResult.Continue;
+                }
+
+                var delta   = (DateTime.Now - stampCodeDown).TotalMilliseconds;
+                var v       = Data;
+
+                if((delta > v.deltaMin && delta <= v.deltaMax) && SysMessages.Eq(wParam, CodeUp)) {
+                    LSender.Send(this, $"{CodeDown} <--> {CodeUp}-{CodeDown} :: consider as a user click", Message.Level.Debug);
+                    return FilterResult.Continue;
+                }
+
+                if(SysMessages.Eq(wParam, CodeUp)) {
+                    pressedCodeUp = true;
                 }
 
                 buffer.Enqueue(new TCode() {
@@ -69,78 +107,79 @@ namespace net.r_eg.MoConTool.Filters
                 });
                 LSender.Send(this, $"'{wParam}' has been buffered ({buffer.Count})", Message.Level.Trace);
 
-                lock(sync)
+                if(lockedThread) {
+                    return FilterResult.Abort;
+                }
+
+                Task.Factory.StartNew(() => 
                 {
-                    if(lockedThread) {
-                        return FilterResult.Abort;
-                    }
-
-                    Task.Factory.StartNew(() => 
+                    lock(sync)
                     {
-                        lock(sync)
+                        lockedThread = true;
+
+                        var cmd1 = new TCode();
+                        while(buffer.Count > 0)
                         {
-                            lockedThread = true;
-
-                            var cmd1 = new TCode();
-                            while(buffer.Count > 0)
-                            {
-                                if(!buffer.TryDequeue(out cmd1)) {
-                                    Thread.Sleep(1);
-                                    continue;
-                                }
-
-                                if(SysMessages.Eq(cmd1.wParam, CodeUp))
-                                {
-                                    // now we should look possible bug: down ... [up, down] ... up
-                                    Thread.Sleep((int)parent.Value); // to wait new codes
-                                    break;
-                                }
-
-                                if(SysMessages.Eq(cmd1.wParam, CodeDown))
-                                {
-                                    shadowClick = true;
-                                    sendCodeDown();
-                                    shadowClick = false;
-
-                                    lockedThread = false;
-                                    return;
-                                }
+                            if(!buffer.TryDequeue(out cmd1)) {
+                                shortSleep();
+                                continue;
                             }
 
-                            if(SysMessages.Eq(cmd1.wParam, 0)) {
+                            if(SysMessages.Eq(cmd1.wParam, CodeUp)) {
+                                // now we should look possible bug: down ... [up, down] ... up
+                                waitNewCodes();
+                                break;
+                            }
+
+                            if(SysMessages.Eq(cmd1.wParam, CodeDown)) {
+                                sendCodeDown();
                                 lockedThread = false;
                                 return;
                             }
-
-                            TCode cmd2;
-                            if(buffer.Count > 0)
-                            {
-                                while(!buffer.TryDequeue(out cmd2)) {
-                                    Thread.Sleep(1);
-                                }
-                                LSender.Send(this, $"Buffer > 0 :: {cmd2.wParam}", Message.Level.Trace);
-                            }
-                            else {
-                                cmd2 = new TCode();
-                            }
-
-                            if(SysMessages.Eq(cmd1.wParam, CodeUp)
-                                && SysMessages.Eq(cmd2.wParam, CodeDown))
-                            {
-                                LSender.Send(this, $"Found bug with recovering of codes {CodeUp} -> {CodeDown}", Message.Level.Info);
-                                parent.trigger();
-                            }
-                            else {
-                                resend(cmd1, cmd2);
-                            }
-
-                            lockedThread = false;
                         }
-                    });
-                }
+
+                        if(SysMessages.Eq(cmd1.wParam, 0)) {
+                            pressedCodeUp = false;
+                            lockedThread = false;
+                            return;
+                        }
+
+                        TCode cmd2;
+                        if(buffer.Count > 0)
+                        {
+                            while(!buffer.TryDequeue(out cmd2)) {
+                                shortSleep();
+                            }
+                            LSender.Send(this, $"Buffer > 0 :: {cmd2.wParam}", Message.Level.Trace);
+                        }
+                        else {
+                            cmd2 = new TCode();
+                        }
+
+                        if(SysMessages.Eq(cmd1.wParam, CodeUp)
+                            && SysMessages.Eq(cmd2.wParam, CodeDown))
+                        {
+                            LSender.Send(this, $"Found bug with recovering of codes {CodeUp} -> {CodeDown}", Message.Level.Info);
+                            parent.trigger();
+                        }
+                        else {
+                            resend(cmd1, cmd2);
+                        }
+
+                        pressedCodeUp = false;
+                        lockedThread = false;
+                    }
+                });
 
                 stamp = DateTime.Now;
                 return FilterResult.Abort;
+            }
+
+            private void waitNewCodes()
+            {
+                // ~ while(buffer.Count < 1) Thread.Sleep(1); - gives ~15ms for each iteration because of ConcurrentQueue and others.
+                Thread.Sleep((int)parent.Value);
+                return;
             }
 
             private void resend(TCode cmd1, TCode cmd2)
@@ -152,19 +191,16 @@ namespace net.r_eg.MoConTool.Filters
             private void sendCode(TCode cmd)
             {
                 if(SysMessages.Eq(cmd.wParam, CodeDown)) {
-                    shadowClick = true;
                     sendCodeDown();
-                    shadowClick = false;
                 }
                 else if(SysMessages.Eq(cmd.wParam, CodeUp)) {
-                    shadowClick = true;
                     sendCodeUp();
-                    shadowClick = false;
                 }
             }
 
             private void sendCodeDown()
             {
+                parent.ReCodes[MouseState.Extract(CodeDown)] = true;
                 MouseSimulator.Down(CodeDown);
 
                 MouseSimulator.Delay();
@@ -173,10 +209,16 @@ namespace net.r_eg.MoConTool.Filters
 
             private void sendCodeUp()
             {
+                parent.ReCodes[MouseState.Extract(CodeUp)] = true;
                 MouseSimulator.Up(CodeUp);
 
                 MouseSimulator.Delay();
                 stamp = DateTime.Now;
+            }
+
+            private void shortSleep()
+            {
+                //Thread.Sleep(1);
             }
         }
 
@@ -196,8 +238,9 @@ namespace net.r_eg.MoConTool.Filters
         public InterruptedClickFilter()
             : base("InterruptedClick")
         {
-            Value = 30;
-            lmr = new LMRContainer(this, typeof(LMR));
+            Value   = 110;
+            Data    = new TData();
+            lmr     = new LMRContainer(this, typeof(LMR));
         }
     }
 }
