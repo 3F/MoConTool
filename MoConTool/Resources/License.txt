@@ -1,0 +1,19 @@
+
+# .\tray.ico
+
+    Modified version.
+
+    The original versions:
+    
+        By Anton Kalashnyk
+        https://www.iconfinder.com/KOLOdesign
+        https://www.iconfinder.com/icons/969265/cogwheels_configuration_gear_seo_setting_settings_icon#size=128
+        
+        License: Free for commercial use
+        
+        +
+        By 'I love colors'
+        http://www.ilovecolors.com.ar/
+        https://www.iconfinder.com/icons/16597/animal_mouse_rat_icon#size=128
+        
+        License: Free for commercial use
