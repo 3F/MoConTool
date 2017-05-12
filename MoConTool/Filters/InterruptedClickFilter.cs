@@ -41,14 +41,14 @@ namespace net.r_eg.MoConTool.Filters
 
         public sealed class TData
         {
-            public uint deltaMin = 10;
+            public uint deltaMin = 43;
             public uint deltaMax = 251;
         }
 
         internal sealed class LMR: LMRAbstract, ILMR
         {
             private volatile bool lockedThread  = false;
-            private volatile bool pressedCodeUp = false;
+            private volatile bool raisedCodeUp  = false;
             private DateTime stampCodeDown      = DateTime.Now;
 
             private object sync = new object();
@@ -79,12 +79,12 @@ namespace net.r_eg.MoConTool.Filters
                 //    return FilterResult.Continue;
                 //}
 
-                if(!pressedCodeUp && SysMessages.Eq(wParam, CodeDown)) {
+                if(!raisedCodeUp && SysMessages.Eq(wParam, CodeDown)) {
                     stampCodeDown = DateTime.Now;
                     return FilterResult.Continue;
                 }
 
-                if(pressedCodeUp && SysMessages.Eq(wParam, CodeUp)) {
+                if(raisedCodeUp && SysMessages.Eq(wParam, CodeUp)) {
                     return FilterResult.Continue;
                 }
 
@@ -92,12 +92,12 @@ namespace net.r_eg.MoConTool.Filters
                 var v       = Data;
 
                 if((delta > v.deltaMin && delta <= v.deltaMax) && SysMessages.Eq(wParam, CodeUp)) {
-                    LSender.Send(this, $"{CodeDown} <--> {CodeUp}-{CodeDown} :: consider as a user click", Message.Level.Debug);
+                    LSender.Send(this, $"{CodeDown} <-{delta}-> {CodeUp}-{CodeDown} :: consider as a user click", Message.Level.Debug);
                     return FilterResult.Continue;
                 }
 
                 if(SysMessages.Eq(wParam, CodeUp)) {
-                    pressedCodeUp = true;
+                    raisedCodeUp = true;
                 }
 
                 buffer.Enqueue(new TCode() {
@@ -139,7 +139,7 @@ namespace net.r_eg.MoConTool.Filters
                         }
 
                         if(SysMessages.Eq(cmd1.wParam, 0)) {
-                            pressedCodeUp = false;
+                            raisedCodeUp = false;
                             lockedThread = false;
                             return;
                         }
@@ -166,12 +166,12 @@ namespace net.r_eg.MoConTool.Filters
                             resend(cmd1, cmd2);
                         }
 
-                        pressedCodeUp = false;
+                        raisedCodeUp = false;
                         lockedThread = false;
                     }
                 });
 
-                stamp = DateTime.Now;
+                //stamp = DateTime.Now;
                 return FilterResult.Abort;
             }
 
@@ -204,7 +204,7 @@ namespace net.r_eg.MoConTool.Filters
                 MouseSimulator.Down(CodeDown);
 
                 MouseSimulator.Delay();
-                stamp = DateTime.Now;
+                //stamp = DateTime.Now;
             }
 
             private void sendCodeUp()
@@ -213,7 +213,7 @@ namespace net.r_eg.MoConTool.Filters
                 MouseSimulator.Up(CodeUp);
 
                 MouseSimulator.Delay();
-                stamp = DateTime.Now;
+                //stamp = DateTime.Now;
             }
 
             private void shortSleep()

@@ -31,8 +31,16 @@ namespace net.r_eg.MoConTool.Filters
 
     internal interface ILMR
     {
+        uint CodeDown { get; }
+
+        uint CodeUp { get; }
+
+        double Delta { get; }
+
         FilterResult process(int nCode, WPARAM wParam, LPARAM lParam);
 
         void init(uint codeDown, uint codeUp, IMouseListenerSvc parent);
+
+        void updateStamp();
     }
 }

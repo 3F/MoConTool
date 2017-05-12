@@ -44,25 +44,28 @@ namespace net.r_eg.MoConTool.Filters
             {
                 lock(sync)
                 {
-                    var delta = (DateTime.Now - stamp).TotalMilliseconds;
-                    LSender.Send(this, $"{wParam} - delta {delta}ms", Message.Level.Trace);
+                    var d = Delta;
+                    //LSender.Send(this, $"{wParam} - delta {d}ms", Message.Level.Trace);
 
-                    if(isPrevCodeDown) {
+                    if(isPrevCodeDown)
+                    {
                         isPrevCodeDown = false;
                         LSender.Send(this, $"Prevent '{wParam}' because of previous {CodeDown}", Message.Level.Debug);
                         return FilterResult.Abort;
                     }
 
-                    if(SysMessages.Eq(wParam, CodeDown) && delta < parent.Value) {
-                        LSender.Send(this, $"Found double-click bug of '{wParam}' because of delta {delta}", Message.Level.Info);
+                    if(SysMessages.Eq(wParam, CodeDown) && d < parent.Value)
+                    {
+                        LSender.Send(this, $"Found double-click bug of '{wParam}' because of delta {d}", Message.Level.Info);
                         isPrevCodeDown = true;
 
                         parent.trigger();
+                        updateStamp();
                         return FilterResult.Abort;
                     }
 
                     if(SysMessages.Eq(wParam, CodeDown)) {
-                        stamp = DateTime.Now;
+                        updateStamp();
                     }
 
                     return FilterResult.Continue;
@@ -86,8 +89,8 @@ namespace net.r_eg.MoConTool.Filters
         public DoubleClicksFilter()
             : base("DoubleClicks")
         {
-            Value = 118;
-            lmr = new LMRContainer(this, typeof(LMR));
+            Value   = 118;
+            lmr     = new LMRContainer(this, typeof(LMR));
         }
     }
 }

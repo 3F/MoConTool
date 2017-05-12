@@ -23,6 +23,8 @@
 */
 
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -40,6 +42,29 @@ namespace net.r_eg.MoConTool.Extensions
             using(MD5 md5 = MD5.Create()) {
                 return new Guid(md5.ComputeHash(Encoding.UTF8.GetBytes(str)));
             }
+        }
+
+        public static bool Eq(this string a, string b, StringComparison cmp = StringComparison.InvariantCultureIgnoreCase)
+        {
+            return a.Equals(b, cmp);
+        }
+
+        public static double[] DValues(this string str, params char[] separator)
+        {
+            List<double> ret = new List<double>();
+            foreach(string num in str.Split(separator)) {
+                ret.Add(num.DValue());
+            }
+            return ret.ToArray();
+        }
+
+        public static double DValue(this string str)
+        {
+            double v;
+            if(!double.TryParse(str, NumberStyles.Float, CultureInfo.InvariantCulture, out v)) {
+                throw new ArgumentException($"The value '{str}' is not correct");
+            }
+            return v;
         }
     }
 }

@@ -25,6 +25,8 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
@@ -136,6 +138,11 @@ namespace net.r_eg.MoConTool.UI
         {
             h.resetTriggerCount();
             label.Text = "0";
+        }
+
+        private string to(decimal val)
+        {
+            return val.ToString(System.Globalization.CultureInfo.InvariantCulture);
         }
 
         private void render()
@@ -331,6 +338,81 @@ namespace net.r_eg.MoConTool.UI
             if(!chkDebug.Checked) {
                 uiAction(() => listBoxDebug.Items.Clear());
             }
+        }
+
+        private void btnCmd_Click(object sender, EventArgs e)
+        {
+            var sb = new StringBuilder();
+            sb.Append(Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().Location));
+
+            if(chkInterruptedClick.Checked 
+                && (chkInterruptedBtnL.Checked || chkInterruptedBtnM.Checked || chkInterruptedBtnR.Checked))
+            {
+                sb.Append(" ");
+                sb.Append("-InterruptedClick ");
+                if(chkInterruptedBtnL.Checked) {
+                    sb.Append("L");
+                }
+                if(chkInterruptedBtnM.Checked) {
+                    sb.Append("M");
+                }
+                if(chkInterruptedBtnR.Checked) {
+                    sb.Append("R");
+                }
+                sb.Append(" ");
+                sb.Append(to(numInterruptedClick.Value));
+                sb.Append(";");
+                sb.Append(to(numIntClickDeltaMin.Value));
+                sb.Append(";");
+                sb.Append(to(numIntClickDeltaMax.Value));
+            }
+
+            if(chkMixedClicks.Checked 
+                && (chkMixedBtnL.Checked || chkMixedBtnM.Checked || chkMixedBtnR.Checked))
+            {
+                sb.Append(" ");
+                sb.Append("-MixedClicks ");
+                if(chkMixedBtnL.Checked) {
+                    sb.Append("L");
+                }
+                if(chkMixedBtnM.Checked) {
+                    sb.Append("M");
+                }
+                if(chkMixedBtnR.Checked) {
+                    sb.Append("R");
+                }
+                sb.Append(" ");
+                sb.Append(chkMixedClicksOnlyDown.Checked ? 1 : 0);
+            }
+
+            if(chkDoubleClick.Checked 
+                && (chkDoubleBtnL.Checked || chkDoubleBtnM.Checked || chkDoubleBtnR.Checked))
+            {
+                sb.Append(" ");
+                sb.Append("-DoubleClicks ");
+                if(chkDoubleBtnL.Checked) {
+                    sb.Append("L");
+                }
+                if(chkDoubleBtnM.Checked) {
+                    sb.Append("M");
+                }
+                if(chkDoubleBtnR.Checked) {
+                    sb.Append("R");
+                }
+                sb.Append(" ");
+                sb.Append(to(numDoubleClick.Value));
+            }
+
+            if(chkHyperactiveScroll.Checked)
+            {
+                sb.Append(" ");
+                sb.Append("-HyperactiveScroll ");
+                sb.Append(to(numHyperScrollCapacity.Value));
+                sb.Append(";");
+                sb.Append(to(numHyperScrollLimit.Value));
+            }
+
+            MessageBox.Show(sb.ToString(), "Press Ctrl+C to copy:");
         }
 
         private void listBoxDebug_MouseHover(object sender, EventArgs e)

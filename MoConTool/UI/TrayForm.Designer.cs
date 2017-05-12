@@ -72,6 +72,7 @@
             this.numInterruptedClick = new System.Windows.Forms.NumericUpDown();
             this.chkInterruptedClick = new System.Windows.Forms.CheckBox();
             this.toolTipMain = new System.Windows.Forms.ToolTip(this.components);
+            this.btnCmd = new System.Windows.Forms.Button();
             this.menuTray.SuspendLayout();
             this.contextMenuDebug.SuspendLayout();
             this.panelSmallLine.SuspendLayout();
@@ -284,7 +285,7 @@
             this.numIntClickDeltaMin.Name = "numIntClickDeltaMin";
             this.numIntClickDeltaMin.Size = new System.Drawing.Size(49, 20);
             this.numIntClickDeltaMin.TabIndex = 36;
-            this.toolTipMain.SetToolTip(this.numIntClickDeltaMin, "Delta-Min of user click. Recommended: 10 - 30 ms");
+            this.toolTipMain.SetToolTip(this.numIntClickDeltaMin, "Delta-Min of user click. Recommended: 10 - 70 ms");
             this.numIntClickDeltaMin.ValueChanged += new System.EventHandler(this.numIntClickDeltaMin_ValueChanged);
             // 
             // numIntClickDeltaMax
@@ -300,7 +301,7 @@
             this.numIntClickDeltaMax.Name = "numIntClickDeltaMax";
             this.numIntClickDeltaMax.Size = new System.Drawing.Size(54, 20);
             this.numIntClickDeltaMax.TabIndex = 35;
-            this.toolTipMain.SetToolTip(this.numIntClickDeltaMax, "Delta-Max of user click. Recommended: 100 - 400 ms");
+            this.toolTipMain.SetToolTip(this.numIntClickDeltaMax, "Delta-Max of user click. Recommended: 150 - 400 ms");
             this.numIntClickDeltaMax.ValueChanged += new System.EventHandler(this.numIntClickDeltaMax_ValueChanged);
             // 
             // chkMixedClicksOnlyDown
@@ -592,11 +593,23 @@
             this.chkInterruptedClick.UseVisualStyleBackColor = true;
             this.chkInterruptedClick.CheckedChanged += new System.EventHandler(this.chkInterruptedClick_CheckedChanged);
             // 
+            // btnCmd
+            // 
+            this.btnCmd.Location = new System.Drawing.Point(405, 142);
+            this.btnCmd.Name = "btnCmd";
+            this.btnCmd.Size = new System.Drawing.Size(41, 23);
+            this.btnCmd.TabIndex = 17;
+            this.btnCmd.Text = "cmd";
+            this.toolTipMain.SetToolTip(this.btnCmd, "Actual arguments from current values to use in command-line");
+            this.btnCmd.UseVisualStyleBackColor = true;
+            this.btnCmd.Click += new System.EventHandler(this.btnCmd_Click);
+            // 
             // TrayForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(562, 351);
+            this.Controls.Add(this.btnCmd);
             this.Controls.Add(this.panelMain);
             this.Controls.Add(this.panelSmallLine);
             this.Controls.Add(this.listBoxDebug);
@@ -672,6 +685,7 @@
         private System.Windows.Forms.CheckBox chkMixedClicksOnlyDown;
         private System.Windows.Forms.NumericUpDown numIntClickDeltaMin;
         private System.Windows.Forms.NumericUpDown numIntClickDeltaMax;
+        private System.Windows.Forms.Button btnCmd;
     }
 }
 

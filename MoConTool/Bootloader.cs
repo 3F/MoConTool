@@ -24,13 +24,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using net.r_eg.Conari.Log;
+using net.r_eg.MoConTool.Extensions;
 using net.r_eg.MoConTool.Filters;
 
 namespace net.r_eg.MoConTool
 {
+    using AVal = Action<IMouseListener, string>;
+
     public class Bootloader: IBootloader
     {
         private object sync = new object();
@@ -95,19 +97,35 @@ namespace net.r_eg.MoConTool
             ArgsHelper h = new ArgsHelper(Filters);
             h.args = args;
 
-            Action<IMouseListener, double> act = (IMouseListener l, double v) => {
-                if(v <= 0 || v > 10000) {
-                    throw new ArgumentOutOfRangeException("The number should be in range > 0 and <= 10000");
-                }
-                l.Value = v;
+            AVal aic = (IMouseListener l, string s) =>
+            {
+                var v = s.DValues(';');
+                l.Value = v[0];
+                l.Data = new InterruptedClickFilter.TData() { deltaMin = (uint)v[1], deltaMax = (uint)v[2] };
+            };
+
+            AVal amc = (IMouseListener l, string s) =>
+            {
+                l.Data = new MixedClicksFilter.TData() { onlyDownCodes = s.DValue() != 0 };
+            };
+
+            AVal adc = (IMouseListener l, string s) =>
+            {
+                l.Value = s.DValue();
+            };
+
+            AVal ahs = (IMouseListener l, string s) =>
+            {
+                var v = s.DValues(';');
+                l.Data = new HyperactiveScrollFilter.TData() { capacity = (int)v[0], limit = (uint)v[1] };
             };
 
             for(h.idx = 0; h.idx < args.Length; ++h.idx)
             {
-                if(!h.set("-InterruptedClick", typeof(InterruptedClickFilter), act) 
-                    && !h.set("-MixedClicks", typeof(MixedClicksFilter), null)
-                    && !h.set("-DoubleClicks", typeof(DoubleClicksFilter), act)
-                    && !h.set("-HyperactiveScroll", typeof(HyperactiveScrollFilter), act, MouseState.Flags.None))
+                if(!h.set("-InterruptedClick", typeof(InterruptedClickFilter), aic) 
+                    && !h.set("-MixedClicks", typeof(MixedClicksFilter), amc)
+                    && !h.set("-DoubleClicks", typeof(DoubleClicksFilter), adc)
+                    && !h.set("-HyperactiveScroll", typeof(HyperactiveScrollFilter), ahs, MouseState.Flags.None))
                 {
                     throw new ArgumentException($"Incorrect arguments: {args[h.idx]} -> {String.Join(" ", args)}");
                 }
@@ -130,9 +148,9 @@ namespace net.r_eg.MoConTool
                 Filters = filters;
             }
 
-            public bool set(string key, Type filter, Action<IMouseListener, double> aval, MouseState.Flags ifType = MouseState.Flags.LMR)
+            public bool set(string key, Type filter, AVal aval, MouseState.Flags ifType = MouseState.Flags.LMR)
             {
-                if(!eq(args[idx], key)) {
+                if(!args[idx].Eq(key)) {
                     return false;
                 }
                 LSender.Send(this, $"Found '{key}' key in {idx} position.", Message.Level.Debug);
@@ -146,13 +164,13 @@ namespace net.r_eg.MoConTool
                     type = MouseState.Flags.None;
                 }
 
-                double val;
+                string val;
                 if(aval != null) {
-                    val = extract(args[++idx]);
+                    val = args[++idx];
                     LSender.Send(this, $"value = {val} by {idx}", Message.Level.Debug);
                 }
                 else {
-                    val = 0;
+                    val = null;
                 }
 
                 Guid g = filter.GUID;
@@ -174,21 +192,6 @@ namespace net.r_eg.MoConTool
 
                 Filters[g].Handler = type;
                 return true;
-            }
-
-            private double extract(string num)
-            {
-                double val;
-                if(!double.TryParse(num, NumberStyles.Float, CultureInfo.InvariantCulture, out val)) {
-                    throw new ArgumentException($"The value '{num}' is not correct");
-                }
-
-                return val;
-            }
-
-            private bool eq(string a, string b)
-            {
-                return a.Equals(b, StringComparison.InvariantCultureIgnoreCase);
             }
         }
     }

@@ -33,20 +33,31 @@ namespace net.r_eg.MoConTool.Filters
     {
         protected IMouseListenerSvc parent;
 
-        protected DateTime stamp = DateTime.Now;
-
-        protected uint CodeDown
-        {
-            get;
-            set;
-        }
-        protected uint CodeUp
-        {
-            get;
-            set;
-        }
+        protected DateTime stamp;
 
         public abstract FilterResult process(int nCode, WPARAM wParam, LPARAM lParam);
+
+        public uint CodeDown
+        {
+            get;
+            protected set;
+        }
+        public uint CodeUp
+        {
+            get;
+            protected set;
+        }
+
+        public double Delta
+        {
+            get
+            {
+                if(stamp == null) {
+                    return 0;
+                }
+                return Math.Max(0, (DateTime.Now - stamp).TotalMilliseconds);
+            }
+        }
 
         public void init(uint codeDown, uint codeUp, IMouseListenerSvc parent)
         {
@@ -57,6 +68,11 @@ namespace net.r_eg.MoConTool.Filters
             CodeDown    = codeDown;
             CodeUp      = codeUp;
             this.parent = parent;
+        }
+
+        public void updateStamp()
+        {
+            stamp = DateTime.Now;
         }
     }
 }
