@@ -286,15 +286,19 @@ namespace net.r_eg.MoConTool.UI
             chkDebug_CheckedChanged(this, EventArgs.Empty);
             render();
 
-            notifyIconMain.Text = menuCaption.Text
-                                = $"{Text} v{Application.ProductVersion}";
+            Text                = $"{Application.ProductName} v{MoConToolVersion.S_INFO}";
+            notifyIconMain.Text = Text;
+            menuCaption.Text    = $"{Application.ProductName} v{MoConToolVersion.S_NUM_REV}";
+#if DEBUG
+            Text += " [Debug version]";
+#endif
 
             chkPlug.Checked = true;
         }
 
         private void menuAbout_Click(object sender, EventArgs e)
         {
-            MessageBox.Show($"Version: {Application.ProductVersion}\n\nLicense: MIT\nentry.reg@gmail.com :: github.com/3F", 
+            MessageBox.Show($"Version: {MoConToolVersion.S_INFO_FULL}\n\nLicense: MIT\nentry.reg@gmail.com :: github.com/3F", 
                             Text, 
                             MessageBoxButtons.OK, 
                             MessageBoxIcon.Information);
@@ -474,6 +478,11 @@ namespace net.r_eg.MoConTool.UI
             }
 
             MessageBox.Show(sb.ToString(), "Press Ctrl+C to copy:");
+        }
+
+        private void btnNewFilter_Click(object sender, EventArgs e)
+        {
+            menuSrcCode_Click(sender, e);
         }
 
         private void listBoxDebug_MouseHover(object sender, EventArgs e)

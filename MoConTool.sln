@@ -1,18 +1,33 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26228.4
-MinimumVisualStudioVersion = 10.0.30319.1
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoConTool", "MoConTool\MoConTool.csproj", "{662EFC2D-C55D-4DB1-888B-C6458482A3CB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{B0F69AA0-7D5E-4696-967D-340269D5937F}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		.version = .version
+		build.bat = build.bat
+		gnt.bat = gnt.bat
+		tools\hMSBuild.bat = tools\hMSBuild.bat
+		License.txt = License.txt
+		packages.config = packages.config
+		Readme.md = Readme.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		PublicRelease|Any CPU = PublicRelease|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{662EFC2D-C55D-4DB1-888B-C6458482A3CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{662EFC2D-C55D-4DB1-888B-C6458482A3CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{662EFC2D-C55D-4DB1-888B-C6458482A3CB}.PublicRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{662EFC2D-C55D-4DB1-888B-C6458482A3CB}.PublicRelease|Any CPU.Build.0 = Release|Any CPU
 		{662EFC2D-C55D-4DB1-888B-C6458482A3CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{662EFC2D-C55D-4DB1-888B-C6458482A3CB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection

@@ -78,6 +78,7 @@
     <Compile Include="Log\LSender.cs" />
     <Compile Include="Log\Message.cs" />
     <Compile Include="ISynchSubscribers.cs" />
+    <Compile Include="MoConToolVersion.cs" />
     <Compile Include="Simulators\MouseSimulator.cs" />
     <Compile Include="SynchSubscribers.cs" />
     <Compile Include="Exceptions\WinFuncFailException.cs" />

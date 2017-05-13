@@ -75,6 +75,7 @@
             this.toolTipMain = new System.Windows.Forms.ToolTip(this.components);
             this.btnCmd = new System.Windows.Forms.Button();
             this.labelHotKeyUnplug = new System.Windows.Forms.Label();
+            this.btnNewFilter = new System.Windows.Forms.Button();
             this.menuTray.SuspendLayout();
             this.contextMenuDebug.SuspendLayout();
             this.panelSmallLine.SuspendLayout();
@@ -192,7 +193,7 @@
             this.toolStripSeparator3,
             this.menuClear});
             this.contextMenuDebug.Name = "contextMenuDebug";
-            this.contextMenuDebug.Size = new System.Drawing.Size(191, 98);
+            this.contextMenuDebug.Size = new System.Drawing.Size(191, 76);
             this.contextMenuDebug.MouseLeave += new System.EventHandler(this.contextMenuDebug_MouseLeave);
             this.contextMenuDebug.MouseHover += new System.EventHandler(this.contextMenuDebug_MouseHover);
             // 
@@ -215,12 +216,12 @@
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(145, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(187, 6);
             // 
             // menuClear
             // 
             this.menuClear.Name = "menuClear";
-            this.menuClear.Size = new System.Drawing.Size(148, 22);
+            this.menuClear.Size = new System.Drawing.Size(190, 22);
             this.menuClear.Text = "Clear";
             this.menuClear.Click += new System.EventHandler(this.menuClear_Click);
             // 
@@ -621,11 +622,24 @@
             this.labelHotKeyUnplug.TabIndex = 18;
             this.labelHotKeyUnplug.Text = "Extra Unplug: [Ctrl + Alt + RShift] + Z";
             // 
+            // btnNewFilter
+            // 
+            this.btnNewFilter.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnNewFilter.Location = new System.Drawing.Point(314, 142);
+            this.btnNewFilter.Name = "btnNewFilter";
+            this.btnNewFilter.Size = new System.Drawing.Size(90, 23);
+            this.btnNewFilter.TabIndex = 19;
+            this.btnNewFilter.Text = "Add New Filter";
+            this.toolTipMain.SetToolTip(this.btnNewFilter, "Add new filter");
+            this.btnNewFilter.UseVisualStyleBackColor = true;
+            this.btnNewFilter.Click += new System.EventHandler(this.btnNewFilter_Click);
+            // 
             // TrayForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(562, 351);
+            this.Controls.Add(this.btnNewFilter);
             this.Controls.Add(this.labelHotKeyUnplug);
             this.Controls.Add(this.btnCmd);
             this.Controls.Add(this.panelMain);
@@ -706,6 +720,7 @@
         private System.Windows.Forms.NumericUpDown numIntClickDeltaMax;
         private System.Windows.Forms.Button btnCmd;
         private System.Windows.Forms.Label labelHotKeyUnplug;
+        private System.Windows.Forms.Button btnNewFilter;
     }
 }
 
