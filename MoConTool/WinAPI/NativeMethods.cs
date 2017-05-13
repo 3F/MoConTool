@@ -122,5 +122,37 @@ namespace net.r_eg.MoConTool.WinAPI
         /// <returns>This value is returned by the next hook procedure in the chain. The current hook procedure must also return this value.</returns>
         [DllImport("user32", CharSet = CharSet.Auto)]
         public static extern LRESULT CallNextHookEx(HHOOK hhk, int nCode, WPARAM wParam, LPARAM lParam);
+
+        /// <summary>
+        /// Defines a system-wide hot key.
+        /// https://msdn.microsoft.com/en-us/library/windows/desktop/ms646309(v=vs.85).aspx
+        /// </summary>
+        /// <param name="hWnd"></param>
+        /// <param name="id"></param>
+        /// <param name="fsModifiers"></param>
+        /// <param name="vk"></param>
+        /// <returns></returns>
+        [DllImport("user32", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
+
+        /// <summary>
+        /// Frees a hot key previously registered by the calling thread.
+        /// https://msdn.microsoft.com/en-us/library/windows/desktop/ms646327%28v=vs.85%29.aspx
+        /// </summary>
+        /// <param name="hWnd"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [DllImport("user32", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+
+        /// <summary>
+        /// Retrieves the status of the specified virtual key.
+        /// https://msdn.microsoft.com/en-us/library/windows/desktop/ms646301(v=vs.85).aspx
+        /// https://msdn.microsoft.com/en-us/library/windows/desktop/dd375731%28v=vs.85%29.aspx
+        /// </summary>
+        /// <param name="nVirtKey"></param>
+        /// <returns></returns>
+        [DllImport("user32", CharSet = CharSet.Auto)]
+        public static extern short GetKeyState(int nVirtKey);
     }
 }

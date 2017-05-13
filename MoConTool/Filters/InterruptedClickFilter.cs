@@ -26,7 +26,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
-using net.r_eg.Conari.Log;
+using net.r_eg.MoConTool.Log;
 using net.r_eg.MoConTool.Simulators;
 using net.r_eg.MoConTool.WinAPI;
 

@@ -21,28 +21,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
 */
+/*
+ * origin: net.r_eg.TmVTweaks.HotKeys :: Copyright (c) 2016  Denis Kuzmin <entry.reg@gmail.com>
+*/
 
 using System;
+using System.Windows.Forms;
 
-namespace net.r_eg.MoConTool
+namespace net.r_eg.MoConTool.HotKeys
 {
-    public interface IMokona: IDisposable
+    public interface IGlobalHotKey
     {
         /// <summary>
-        /// Access to main loader.
+        /// When the registered hot key has been pressed.
         /// </summary>
-        IBootloader Loader { get; }
+        event EventHandler<HotKeyEventArgs> KeyPress;
 
         /// <summary>
-        /// Activates tool in system.
+        /// To register hot key combination.
         /// </summary>
-        /// <returns>false value if it was already activated before, otherwise true.</returns>
-        bool plug();
+        /// <param name="mod"></param>
+        /// <param name="key"></param>
+        /// <returns>Identifier of registered combination.</returns>
+        int register(Modifiers mod, Keys key);
 
         /// <summary>
-        /// Deactivates tool from system.
+        /// Frees a hot key by identifier from the register() method.
         /// </summary>
-        /// <returns>false value if it was not found or already deactivated before, otherwise true.</returns>
-        bool unplug();
+        /// <param name="ident"></param>
+        /// <returns></returns>
+        bool unregister(int ident);
+
+        /// <summary>
+        /// Checks the high-order bit for present key.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns>true if bit is 1</returns>
+        bool highOrderBitIsOne(Keys key);
     }
 }

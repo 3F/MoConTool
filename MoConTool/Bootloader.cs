@@ -25,9 +25,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using net.r_eg.Conari.Log;
 using net.r_eg.MoConTool.Extensions;
 using net.r_eg.MoConTool.Filters;
+using net.r_eg.MoConTool.Log;
 
 namespace net.r_eg.MoConTool
 {

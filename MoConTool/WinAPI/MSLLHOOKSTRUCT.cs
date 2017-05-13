@@ -45,6 +45,11 @@ namespace net.r_eg.MoConTool.WinAPI
 
         public DWORD time;
 
-        public ULONG_PTR dwExtraInfo;
+        internal ULONG_PTR dwExtraInfo;
+
+        public UInt64 getDwExtraInfo()
+        {
+            return (UInt64)dwExtraInfo;
+        }
     }
 }

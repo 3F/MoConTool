@@ -27,7 +27,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
-using net.r_eg.Conari.Log;
+using net.r_eg.MoConTool.Log;
 
 namespace net.r_eg.MoConTool
 {

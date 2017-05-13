@@ -23,7 +23,7 @@
 */
 
 using System;
-using net.r_eg.Conari.Log;
+using net.r_eg.MoConTool.Log;
 using net.r_eg.MoConTool.WinAPI;
 
 namespace net.r_eg.MoConTool.Filters

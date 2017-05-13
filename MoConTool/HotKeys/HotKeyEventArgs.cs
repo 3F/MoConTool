@@ -21,28 +21,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
 */
+/*
+ * origin: net.r_eg.TmVTweaks.HotKeys :: Copyright (c) 2016  Denis Kuzmin <entry.reg@gmail.com>
+*/
 
 using System;
+using System.Windows.Forms;
 
-namespace net.r_eg.MoConTool
+namespace net.r_eg.MoConTool.HotKeys
 {
-    public interface IMokona: IDisposable
+    [Serializable]
+    public class HotKeyEventArgs: EventArgs
     {
-        /// <summary>
-        /// Access to main loader.
-        /// </summary>
-        IBootloader Loader { get; }
+        public Modifiers Modifier
+        {
+            get;
+            protected set;
+        }
 
-        /// <summary>
-        /// Activates tool in system.
-        /// </summary>
-        /// <returns>false value if it was already activated before, otherwise true.</returns>
-        bool plug();
+        public Keys Key
+        {
+            get;
+            protected set;
+        }
 
-        /// <summary>
-        /// Deactivates tool from system.
-        /// </summary>
-        /// <returns>false value if it was not found or already deactivated before, otherwise true.</returns>
-        bool unplug();
+        public Message Msg
+        {
+            get;
+            protected set;
+        }
+
+        public HotKeyEventArgs(Modifiers modifier, Keys key, Message m)
+        {
+            Modifier = modifier;
+            Key = key;
+            Msg = m;
+        }
     }
 }

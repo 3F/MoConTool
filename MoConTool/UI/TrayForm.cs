@@ -30,8 +30,9 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
-using net.r_eg.Conari.Log;
 using net.r_eg.MoConTool.Filters;
+using net.r_eg.MoConTool.HotKeys;
+using net.r_eg.MoConTool.Log;
 using net.r_eg.MoConTool.WinAPI;
 
 namespace net.r_eg.MoConTool.UI
@@ -48,9 +49,12 @@ namespace net.r_eg.MoConTool.UI
         private IMouseListener fdc;
         private IMouseListener fhs;
 
+        private GlobalKeys hotKeys = new GlobalKeys();
+
         private bool closing = false;
         private Size origin;
 
+        private ISender log = LSender._;
         private bool suspendedLog;
         private List<object> logmsg = new List<object>();
 
@@ -78,10 +82,11 @@ namespace net.r_eg.MoConTool.UI
             }
             catch(ArgumentException ex) {
                 notifyIconMain.Icon = Icon;
-                LSender.Send(this, ex.Message, Conari.Log.Message.Level.Debug);
+                LSender.Send(this, ex.Message, Log.Message.Level.Debug);
             }
 
-            LSender.SReceived += LSender_SReceived;
+            hotKeys.KeyPress    += onHotKeys;
+            log.Received        += onLogMsgReceived;
 
             fic.Triggering += (object sender, DataArgs<ulong> e) => {
                 uiAction(() => labelInterruptedClick.Text = e.Data.ToString());
@@ -98,6 +103,15 @@ namespace net.r_eg.MoConTool.UI
             fhs.Triggering += (object sender, DataArgs<ulong> e) => {
                 uiAction(() => labelHyperactiveScroll.Text = e.Data.ToString());
             };
+
+            Modifiers mcomb = Modifiers.ControlKey | Modifiers.AltKey | Modifiers.ShiftKey;
+            try {
+                hotKeys.register(mcomb, Keys.Z);
+                hotKeys.register(mcomb, Keys.X);
+            }
+            catch(Exception ex) {
+                log.send(this, ex.Message, Log.Message.Level.Error);
+            }
         }
 
         /// <param name="m"></param>
@@ -145,6 +159,13 @@ namespace net.r_eg.MoConTool.UI
             return val.ToString(System.Globalization.CultureInfo.InvariantCulture);
         }
 
+        private void dispose()
+        {
+            log.Received -= onLogMsgReceived;
+            hotKeys.Dispose();
+            svc.Dispose();
+        }
+
         private void render()
         {
             chkInterruptedClick.Checked = fic.Activated;
@@ -188,7 +209,7 @@ namespace net.r_eg.MoConTool.UI
             chkMixedClicksOnlyDown.Checked = vmc.onlyDownCodes;
         }
 
-        private void LSender_SReceived(object sender, Conari.Log.Message e)
+        private void onLogMsgReceived(object sender, Log.Message e)
         {
             if(!chkDebug.Checked) {
                 return;
@@ -233,6 +254,31 @@ namespace net.r_eg.MoConTool.UI
                     listBoxDebug.ResumeLayout();
                 }
             });
+        }
+
+        private void onHotKeys(object sender, HotKeyEventArgs e)
+        {
+            if(e.Modifier != (Modifiers.ControlKey | Modifiers.AltKey | Modifiers.ShiftKey)) {
+                return;
+            }
+
+            if(!hotKeys.highOrderBitIsOne(Keys.RShiftKey)) {
+                return;
+            }
+
+            log.send(this, $"Received [Ctrl + Alt + RShift] + {e.Key.ToString()}", Log.Message.Level.Debug);
+            switch(e.Key)
+            {
+                case Keys.Z: {
+                    chkPlug.Checked = false;
+                    Show();
+                    return;
+                }
+                case Keys.X: {
+                    chkDebug.Checked = !chkDebug.Checked;
+                    return;
+                }
+            }
         }
 
         private void TrayForm_Load(object sender, EventArgs e)
@@ -297,6 +343,11 @@ namespace net.r_eg.MoConTool.UI
             }
         }
 
+        private void TrayForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            dispose();
+        }
+
         private void chkPlug_CheckedChanged(object sender, EventArgs e)
         {
             if(chkPlug.Checked) {
@@ -304,6 +355,16 @@ namespace net.r_eg.MoConTool.UI
             }
             else {
                 svc.unplug();
+            }
+        }
+
+        private void listBoxDebug_KeyUp(object sender, KeyEventArgs e)
+        {
+            if(e.Modifiers == Keys.Control && e.KeyCode == Keys.C) {
+                menuCopy_Click(sender, e);
+            }
+            else if(e.Modifiers == Keys.Control && e.KeyCode == Keys.A) {
+                menuSelectAll_Click(sender, e);
             }
         }
 
@@ -335,9 +396,9 @@ namespace net.r_eg.MoConTool.UI
         private void chkDebug_CheckedChanged(object sender, EventArgs e)
         {
             ClientSize = chkDebug.Checked ? origin : new Size(ClientSize.Width, listBoxDebug.Location.Y);
-            if(!chkDebug.Checked) {
-                uiAction(() => listBoxDebug.Items.Clear());
-            }
+            //if(!chkDebug.Checked) {
+            //    uiAction(() => listBoxDebug.Items.Clear());
+            //}
         }
 
         private void btnCmd_Click(object sender, EventArgs e)

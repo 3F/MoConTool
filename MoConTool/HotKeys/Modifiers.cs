@@ -21,28 +21,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
 */
+/*
+ * origin: net.r_eg.TmVTweaks.HotKeys :: Copyright (c) 2016  Denis Kuzmin <entry.reg@gmail.com>
+*/
 
-using System;
+using net.r_eg.MoConTool.WinAPI;
 
-namespace net.r_eg.MoConTool
+namespace net.r_eg.MoConTool.HotKeys
 {
-    public interface IMokona: IDisposable
+    public enum Modifiers: uint
     {
         /// <summary>
-        /// Access to main loader.
+        /// Either ALT key must be held down.
         /// </summary>
-        IBootloader Loader { get; }
+        AltKey = ModifierKeys.MOD_ALT,
 
         /// <summary>
-        /// Activates tool in system.
+        /// Either CTRL key must be held down.
         /// </summary>
-        /// <returns>false value if it was already activated before, otherwise true.</returns>
-        bool plug();
+        ControlKey = ModifierKeys.MOD_CONTROL,
 
         /// <summary>
-        /// Deactivates tool from system.
+        /// Either SHIFT key must be held down.
         /// </summary>
-        /// <returns>false value if it was not found or already deactivated before, otherwise true.</returns>
-        bool unplug();
+        ShiftKey = ModifierKeys.MOD_SHIFT,
+
+        /// <summary>
+        /// Either WINDOWS key was held down. 
+        /// These keys are labeled with the Windows logo. 
+        /// Keyboard shortcuts that involve the WINDOWS key are reserved for use by the operating system.
+        /// </summary>
+        WinKey = ModifierKeys.MOD_WIN,
+
+        /// <summary>
+        /// Changes the hotkey behavior so that the keyboard auto-repeat does not yield multiple hotkey notifications.
+        /// Windows Vista: This flag is not supported.
+        /// </summary>
+        NoRepeat = ModifierKeys.MOD_NOREPEAT,
     }
 }

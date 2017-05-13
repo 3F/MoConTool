@@ -92,6 +92,13 @@ namespace net.r_eg.MoConTool.WinAPI
         public const uint WM_MOUSEHWHEEL = 0x020E;
 
         /// <summary>
+        /// Posted when the user presses a hot key registered by the RegisterHotKey function. 
+        /// The message is placed at the top of the message queue associated with the thread that registered the hot key. 
+        /// https://msdn.microsoft.com/en-us/library/windows/desktop/ms646279%28v=vs.85%29.aspx
+        /// </summary>
+        public const int WM_HOTKEY = 0x0312;
+
+        /// <summary>
         /// Checks equality.
         /// </summary>
         public static bool Eq(WPARAM a, uint b)

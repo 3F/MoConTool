@@ -58,6 +58,11 @@
     <Compile Include="Filters\MixedClicksFilter.cs" />
     <Compile Include="Filters\DoubleClicksFilter.cs" />
     <Compile Include="Filters\HyperactiveScrollFilter.cs" />
+    <Compile Include="HotKeys\GlobalKeys.cs" />
+    <Compile Include="HotKeys\HotKeyEventArgs.cs" />
+    <Compile Include="HotKeys\IdentHotKey.cs" />
+    <Compile Include="HotKeys\IGlobalHotKey.cs" />
+    <Compile Include="HotKeys\Modifiers.cs" />
     <Compile Include="IBootloader.cs" />
     <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="Filters\FilterAbstract.cs" />
@@ -87,6 +92,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WinAPI\LPINPUT.cs" />
+    <Compile Include="WinAPI\ModifierKeys.cs" />
     <Compile Include="WinAPI\POINT.cs" />
     <Compile Include="WinAPI\NativeMethods.cs" />
     <Compile Include="WinAPI\MSLLHOOKSTRUCT.cs" />

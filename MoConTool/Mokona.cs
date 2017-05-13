@@ -26,9 +26,9 @@ using System;
 using System.Collections.Concurrent;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using net.r_eg.Conari.Log;
 using net.r_eg.MoConTool.Exceptions;
 using net.r_eg.MoConTool.Filters;
+using net.r_eg.MoConTool.Log;
 using net.r_eg.MoConTool.WinAPI;
 
 namespace net.r_eg.MoConTool
@@ -39,7 +39,7 @@ namespace net.r_eg.MoConTool
     using WPARAM = UIntPtr;
     using ReCodesDict = ConcurrentDictionary<MouseState.Flags, bool>;
 
-    public sealed class Mokona: IMokona
+    public sealed class Mokona: IMokona, IDisposable
     {
         private IntPtr stopChainCode = new IntPtr(1);
 
@@ -191,5 +191,42 @@ namespace net.r_eg.MoConTool
 
             return -1;
         }
+
+        private void free()
+        {
+            unplug();
+        }
+
+        #region IDisposable
+
+        // To detect redundant calls
+        private bool disposed = false;
+
+        // To correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        ~Mokona() // CA2216
+        {
+            Dispose(false);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if(disposed) {
+                return;
+            }
+            disposed = true;
+
+            free();
+
+            if(disposing) {
+                GC.SuppressFinalize(this);
+            }
+        }
+
+        #endregion
     }
 }

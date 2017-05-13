@@ -16,6 +16,7 @@
             if(disposing && (components != null)) {
                 components.Dispose();
             }
+            dispose();
             base.Dispose(disposing);
         }
 
@@ -73,6 +74,7 @@
             this.chkInterruptedClick = new System.Windows.Forms.CheckBox();
             this.toolTipMain = new System.Windows.Forms.ToolTip(this.components);
             this.btnCmd = new System.Windows.Forms.Button();
+            this.labelHotKeyUnplug = new System.Windows.Forms.Label();
             this.menuTray.SuspendLayout();
             this.contextMenuDebug.SuspendLayout();
             this.panelSmallLine.SuspendLayout();
@@ -160,6 +162,7 @@
             this.chkDebug.Size = new System.Drawing.Size(56, 17);
             this.chkDebug.TabIndex = 13;
             this.chkDebug.Text = "Debug";
+            this.toolTipMain.SetToolTip(this.chkDebug, "[Ctrl + Alt + RShift] + X");
             this.chkDebug.UseVisualStyleBackColor = true;
             this.chkDebug.CheckedChanged += new System.EventHandler(this.chkDebug_CheckedChanged);
             // 
@@ -177,6 +180,7 @@
             this.listBoxDebug.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.listBoxDebug.Size = new System.Drawing.Size(556, 184);
             this.listBoxDebug.TabIndex = 14;
+            this.listBoxDebug.KeyUp += new System.Windows.Forms.KeyEventHandler(this.listBoxDebug_KeyUp);
             this.listBoxDebug.MouseLeave += new System.EventHandler(this.listBoxDebug_MouseLeave);
             this.listBoxDebug.MouseHover += new System.EventHandler(this.listBoxDebug_MouseHover);
             // 
@@ -188,21 +192,23 @@
             this.toolStripSeparator3,
             this.menuClear});
             this.contextMenuDebug.Name = "contextMenuDebug";
-            this.contextMenuDebug.Size = new System.Drawing.Size(149, 76);
+            this.contextMenuDebug.Size = new System.Drawing.Size(191, 98);
             this.contextMenuDebug.MouseLeave += new System.EventHandler(this.contextMenuDebug_MouseLeave);
             this.contextMenuDebug.MouseHover += new System.EventHandler(this.contextMenuDebug_MouseHover);
             // 
             // menuCopy
             // 
             this.menuCopy.Name = "menuCopy";
-            this.menuCopy.Size = new System.Drawing.Size(148, 22);
+            this.menuCopy.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
+            this.menuCopy.Size = new System.Drawing.Size(190, 22);
             this.menuCopy.Text = "Copy selected";
             this.menuCopy.Click += new System.EventHandler(this.menuCopy_Click);
             // 
             // menuSelectAll
             // 
             this.menuSelectAll.Name = "menuSelectAll";
-            this.menuSelectAll.Size = new System.Drawing.Size(148, 22);
+            this.menuSelectAll.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+            this.menuSelectAll.Size = new System.Drawing.Size(190, 22);
             this.menuSelectAll.Text = "Select All";
             this.menuSelectAll.Click += new System.EventHandler(this.menuSelectAll_Click);
             // 
@@ -238,6 +244,7 @@
             this.chkPlug.Size = new System.Drawing.Size(45, 17);
             this.chkPlug.TabIndex = 16;
             this.chkPlug.Text = "Plug";
+            this.toolTipMain.SetToolTip(this.chkPlug, "[Ctrl + Alt + RShift] + Z");
             this.chkPlug.UseVisualStyleBackColor = true;
             this.chkPlug.CheckedChanged += new System.EventHandler(this.chkPlug_CheckedChanged);
             // 
@@ -604,23 +611,34 @@
             this.btnCmd.UseVisualStyleBackColor = true;
             this.btnCmd.Click += new System.EventHandler(this.btnCmd_Click);
             // 
+            // labelHotKeyUnplug
+            // 
+            this.labelHotKeyUnplug.AutoSize = true;
+            this.labelHotKeyUnplug.ForeColor = System.Drawing.Color.DimGray;
+            this.labelHotKeyUnplug.Location = new System.Drawing.Point(13, 143);
+            this.labelHotKeyUnplug.Name = "labelHotKeyUnplug";
+            this.labelHotKeyUnplug.Size = new System.Drawing.Size(179, 13);
+            this.labelHotKeyUnplug.TabIndex = 18;
+            this.labelHotKeyUnplug.Text = "Extra Unplug: [Ctrl + Alt + RShift] + Z";
+            // 
             // TrayForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(562, 351);
+            this.Controls.Add(this.labelHotKeyUnplug);
             this.Controls.Add(this.btnCmd);
             this.Controls.Add(this.panelMain);
             this.Controls.Add(this.panelSmallLine);
             this.Controls.Add(this.listBoxDebug);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
-            this.MinimizeBox = false;
             this.Name = "TrayForm";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MoConTool";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TrayForm_FormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.TrayForm_FormClosed);
             this.Load += new System.EventHandler(this.TrayForm_Load);
             this.Resize += new System.EventHandler(this.TrayForm_Resize);
             this.menuTray.ResumeLayout(false);
@@ -636,6 +654,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numDoubleClick)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numInterruptedClick)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -686,6 +705,7 @@
         private System.Windows.Forms.NumericUpDown numIntClickDeltaMin;
         private System.Windows.Forms.NumericUpDown numIntClickDeltaMax;
         private System.Windows.Forms.Button btnCmd;
+        private System.Windows.Forms.Label labelHotKeyUnplug;
     }
 }
 

@@ -1,7 +1,7 @@
 ﻿/*
  * The MIT License (MIT)
  * 
- * Copyright (c) 2016-2017  Denis Kuzmin <entry.reg@gmail.com>
+ * Copyright (c) 2017  Denis Kuzmin < entry.reg@gmail.com > :: github.com/3F
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,10 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
 */
+/*
+ * origin: net.r_eg.Conari.Log :: Copyright (c) 2016-2017  Denis Kuzmin <entry.reg@gmail.com>
+*/
 
 using System;
 
-namespace net.r_eg.Conari.Log
+namespace net.r_eg.MoConTool.Log
 {
     /// <summary>
     /// A simple retranslator.

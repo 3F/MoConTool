@@ -22,53 +22,63 @@
  * THE SOFTWARE.
 */
 /*
- * origin: net.r_eg.Conari.Log :: Copyright (c) 2016-2017  Denis Kuzmin <entry.reg@gmail.com>
+ * origin: net.r_eg.TmVTweaks.HotKeys :: Copyright (c) 2016  Denis Kuzmin <entry.reg@gmail.com>
 */
 
 using System;
+using System.Collections.Generic;
 
-namespace net.r_eg.MoConTool.Log
+namespace net.r_eg.MoConTool.HotKeys
 {
-    [Serializable]
-    public class Message: EventArgs
+    /// <summary>
+    /// Represents identifier of the global hot key.
+    /// </summary>
+    public class IdentHotKey
     {
-        public DateTime stamp;
+        public const int MAX_VALUE = int.MaxValue;
+        public const int MIN_VALUE = 1;
 
-        public string content;
+        protected volatile int id;
+        private object _lock = new object();
 
-        public Exception exception;
-
-        public object data;
-
-        public Level type;
-
-        public enum Level
+        public IEnumerable<int> Iter
         {
-            Trace,
-            Debug,
-            Info,
-            Warn,
-            Error,
-            Fatal
+            get
+            {
+                for(int i = MIN_VALUE; i < Current; ++i) {
+                    yield return i;
+                }
+            }
         }
 
-        public Message(string msg, Level type = Level.Debug)
+        public int Current
         {
-            content     = msg;
-            this.type   = type;
-            stamp       = DateTime.Now;
+            get { return id; }
         }
 
-        public Message(string msg, Exception ex, Level type = Level.Error)
-            : this(msg, type)
+        public void Reset()
         {
-            exception = ex;
+            id = MIN_VALUE;
         }
 
-        public Message(string msg, object data, Level type = Level.Debug)
-            : this(msg, type)
+        public IdentHotKey Next()
         {
-            this.data = data;
+            lock(_lock)
+            {
+                if(id + 1 > MAX_VALUE
+                    || (id > MIN_VALUE && id + 1 <= MIN_VALUE)) // case of overflow for type
+                {
+                    throw new OverflowException($"no free values for new identifier: {id} / {MAX_VALUE}");
+                }
+                ++id;
+
+                return this;
+            }
+        }
+
+        public IdentHotKey()
+        {
+            Reset();
         }
     }
 }
