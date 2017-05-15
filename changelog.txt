@@ -2,3 +2,9 @@
 MoConTool  :: https://github.com/3F/MoConTool
 _ _ _ _
 
+
+[v1.0] 2017.05.15
+
+    * The first public release - A variety of patches and tweaks for your favorite mouse. 
+                                 It provides different filters that can help/improve your device.
+    

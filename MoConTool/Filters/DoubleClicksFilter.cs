@@ -47,11 +47,17 @@ namespace net.r_eg.MoConTool.Filters
                     var d = Delta;
                     //LSender.Send(this, $"{wParam} - delta {d}ms", Message.Level.Trace);
 
-                    if(isPrevCodeDown)
+                    if(isPrevCodeDown && SysMessages.Eq(wParam, CodeUp))
                     {
                         isPrevCodeDown = false;
                         LSender.Send(this, $"Prevent '{wParam}' because of previous {CodeDown}", Message.Level.Debug);
                         return FilterResult.Abort;
+                    }
+
+                    if(isPrevCodeDown && SysMessages.Eq(wParam, CodeDown))
+                    {
+                        isPrevCodeDown = false;
+                        LSender.Send(this, $"Expected '{CodeUp}' was not found. Reset flag.", Message.Level.Debug);
                     }
 
                     if(SysMessages.Eq(wParam, CodeDown) && d < parent.Value)
