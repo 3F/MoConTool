@@ -63,7 +63,7 @@ namespace net.r_eg.MoConTool.Simulators
 
         public static void Delay()
         {
-            Thread.Sleep(14); //TODO: user option
+            Thread.Sleep(20); //TODO: user option
         }
 
         public static bool Down(uint code)

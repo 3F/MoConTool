@@ -57,7 +57,7 @@ namespace net.r_eg.MoConTool.Filters
 
                 lock(sync)
                 {
-                    if(toAbortNext) {
+                    if(toAbortNext && SysMessages.Eq(wParam, CodeUp)) {
                         toAbortNext = false;
                         LSender.Send(this, $"Prevent '{wParam}' because of previous mixed code.", Message.Level.Info);
                         return FilterResult.Abort;
@@ -85,7 +85,9 @@ namespace net.r_eg.MoConTool.Filters
                         isBtnUp = true;
                     }
 
+#if DEBUG
                     LSender.Send(this, $"Continue {wParam}", Message.Level.Trace);
+#endif
                     return FilterResult.Continue;
                 }
             }

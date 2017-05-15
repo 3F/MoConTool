@@ -39,6 +39,9 @@ namespace net.r_eg.MoConTool.Extensions
         /// <returns></returns>
         public static Guid Guid(this string str)
         {
+            if(str == null) {
+                str = String.Empty;
+            }
             using(MD5 md5 = MD5.Create()) {
                 return new Guid(md5.ComputeHash(Encoding.UTF8.GetBytes(str)));
             }

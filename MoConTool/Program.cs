@@ -30,7 +30,7 @@ namespace net.r_eg.MoConTool
 {
     internal static class Program
     {
-        internal const string ARGS_DEFAULT = "-InterruptedClick L 110;43;251 -MixedClicks L 1 -DoubleClicks L 118 -HyperactiveScroll 14;250";
+        internal const string ARGS_DEFAULT = "-InterruptedClick L 110;58;217 -MixedClicks L 1 -DoubleClicks L 112 -HyperactiveScroll 14;250";
 
         /// <summary>
         /// The main entry point for the application.
@@ -43,17 +43,22 @@ namespace net.r_eg.MoConTool
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.Automatic);
             Application.ThreadException += onThreadException;
 
-            if(args == null || args.Length < 1) {
-                args = ARGS_DEFAULT.Split(' ');
-            }
-
+            FormWindowState state;
             try
             {
+                if(args == null || args.Length < 1) {
+                    args = ARGS_DEFAULT.Split(' ');
+                    state = FormWindowState.Normal;
+                }
+                else {
+                    state = FormWindowState.Minimized;
+                }
+
                 IBootloader loader = new Bootloader();
                 loader.register();
                 loader.configure(args);
 
-                Application.Run(new UI.TrayForm(loader));
+                Application.Run(new UI.TrayForm(loader, state));
             }
             catch(Exception ex) {
                 mfail(ex, false);

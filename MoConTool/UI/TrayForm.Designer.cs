@@ -74,8 +74,8 @@
             this.chkInterruptedClick = new System.Windows.Forms.CheckBox();
             this.toolTipMain = new System.Windows.Forms.ToolTip(this.components);
             this.btnCmd = new System.Windows.Forms.Button();
-            this.labelHotKeyUnplug = new System.Windows.Forms.Label();
             this.btnNewFilter = new System.Windows.Forms.Button();
+            this.labelHotKeyUnplug = new System.Windows.Forms.Label();
             this.menuTray.SuspendLayout();
             this.contextMenuDebug.SuspendLayout();
             this.panelSmallLine.SuspendLayout();
@@ -603,6 +603,7 @@
             // 
             // btnCmd
             // 
+            this.btnCmd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCmd.Location = new System.Drawing.Point(405, 142);
             this.btnCmd.Name = "btnCmd";
             this.btnCmd.Size = new System.Drawing.Size(41, 23);
@@ -611,6 +612,19 @@
             this.toolTipMain.SetToolTip(this.btnCmd, "Actual arguments from current values to use in command-line");
             this.btnCmd.UseVisualStyleBackColor = true;
             this.btnCmd.Click += new System.EventHandler(this.btnCmd_Click);
+            // 
+            // btnNewFilter
+            // 
+            this.btnNewFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnNewFilter.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnNewFilter.Location = new System.Drawing.Point(314, 142);
+            this.btnNewFilter.Name = "btnNewFilter";
+            this.btnNewFilter.Size = new System.Drawing.Size(90, 23);
+            this.btnNewFilter.TabIndex = 19;
+            this.btnNewFilter.Text = "Add New Filter";
+            this.toolTipMain.SetToolTip(this.btnNewFilter, "Add new filter");
+            this.btnNewFilter.UseVisualStyleBackColor = true;
+            this.btnNewFilter.Click += new System.EventHandler(this.btnNewFilter_Click);
             // 
             // labelHotKeyUnplug
             // 
@@ -621,18 +635,6 @@
             this.labelHotKeyUnplug.Size = new System.Drawing.Size(179, 13);
             this.labelHotKeyUnplug.TabIndex = 18;
             this.labelHotKeyUnplug.Text = "Extra Unplug: [Ctrl + Alt + RShift] + Z";
-            // 
-            // btnNewFilter
-            // 
-            this.btnNewFilter.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnNewFilter.Location = new System.Drawing.Point(314, 142);
-            this.btnNewFilter.Name = "btnNewFilter";
-            this.btnNewFilter.Size = new System.Drawing.Size(90, 23);
-            this.btnNewFilter.TabIndex = 19;
-            this.btnNewFilter.Text = "Add New Filter";
-            this.toolTipMain.SetToolTip(this.btnNewFilter, "Add new filter");
-            this.btnNewFilter.UseVisualStyleBackColor = true;
-            this.btnNewFilter.Click += new System.EventHandler(this.btnNewFilter_Click);
             // 
             // TrayForm
             // 
@@ -646,7 +648,6 @@
             this.Controls.Add(this.panelSmallLine);
             this.Controls.Add(this.listBoxDebug);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
             this.Name = "TrayForm";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -654,7 +655,6 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TrayForm_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.TrayForm_FormClosed);
             this.Load += new System.EventHandler(this.TrayForm_Load);
-            this.Resize += new System.EventHandler(this.TrayForm_Resize);
             this.menuTray.ResumeLayout(false);
             this.contextMenuDebug.ResumeLayout(false);
             this.panelSmallLine.ResumeLayout(false);

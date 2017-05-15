@@ -60,7 +60,7 @@ namespace net.r_eg.MoConTool.UI
 
         private object sync = new object();
 
-        public TrayForm(IBootloader loader)
+        public TrayForm(IBootloader loader, FormWindowState state)
         {
             if(loader == null) {
                 throw new ArgumentNullException("Bootloader cannot be null.");
@@ -102,6 +102,11 @@ namespace net.r_eg.MoConTool.UI
 
             fhs.Triggering += (object sender, DataArgs<ulong> e) => {
                 uiAction(() => labelHyperactiveScroll.Text = e.Data.ToString());
+            };
+
+            WindowState = state;
+            Resize += (object _sender, EventArgs _e) => {
+                visible(WindowState);
             };
 
             Modifiers mcomb = Modifiers.ControlKey | Modifiers.AltKey | Modifiers.ShiftKey;
@@ -157,6 +162,16 @@ namespace net.r_eg.MoConTool.UI
         private string to(decimal val)
         {
             return val.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        }
+
+        private void visible(FormWindowState state)
+        {
+            if(state == FormWindowState.Minimized) {
+                Hide();
+            }
+            else {
+                Show();
+            }
         }
 
         private void dispose()
@@ -286,12 +301,18 @@ namespace net.r_eg.MoConTool.UI
             chkDebug_CheckedChanged(this, EventArgs.Empty);
             render();
 
-            Text                = $"{Application.ProductName} v{MoConToolVersion.S_INFO}";
-            notifyIconMain.Text = Text;
-            menuCaption.Text    = $"{Application.ProductName} v{MoConToolVersion.S_NUM_REV}";
+            Text = Application.ProductName;
+            menuCaption.Text = Text;
+
+#if PUBLIC_RELEASE
+            Text += $" v{MoConToolVersion.S_INFO}";
+            menuCaption.Text += $" v{MoConToolVersion.S_NUM_REV}";
+#endif
+
 #if DEBUG
             Text += " [Debug version]";
 #endif
+            notifyIconMain.Text = Text;
 
             chkPlug.Checked = true;
         }
@@ -317,7 +338,7 @@ namespace net.r_eg.MoConTool.UI
 
         private void menuTweaks_Click(object sender, EventArgs e)
         {
-            Show();
+            visible(FormWindowState.Normal);
             WindowState = FormWindowState.Normal;
         }
 
@@ -329,21 +350,11 @@ namespace net.r_eg.MoConTool.UI
             menuTray.Show(this, PointToClient(Cursor.Position));
         }
 
-        private void TrayForm_Resize(object sender, EventArgs e)
-        {
-            if(WindowState == FormWindowState.Minimized) {
-                Hide();
-            }
-            else {
-                Show();
-            }
-        }
-
         private void TrayForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             if(!closing) {
                 e.Cancel = true;
-                Hide();
+                visible(FormWindowState.Minimized);
             }
         }
 
@@ -399,7 +410,7 @@ namespace net.r_eg.MoConTool.UI
 
         private void chkDebug_CheckedChanged(object sender, EventArgs e)
         {
-            ClientSize = chkDebug.Checked ? origin : new Size(ClientSize.Width, listBoxDebug.Location.Y);
+            ClientSize = chkDebug.Checked ? origin : new Size(origin.Width, listBoxDebug.Location.Y);
             //if(!chkDebug.Checked) {
             //    uiAction(() => listBoxDebug.Items.Clear());
             //}
